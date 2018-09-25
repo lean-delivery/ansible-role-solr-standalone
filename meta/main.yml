@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: "solr"
+  role_name: "solr-standalone"
   author: "Lean Delivery team <team@lean-delivery.com>"
   description: "Lean Delivery Solr installation and configurationn"
   company: "Epam Systems"

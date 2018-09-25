@@ -16,6 +16,6 @@
   hosts: solr_standalone
   roles:
     - role: lean_delivery.java
-    - role: lean_delivery.solr
+    - role: ansible-role-solr-standalone
   vars:
     change_default_password: False
