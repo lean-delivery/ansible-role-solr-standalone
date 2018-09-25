@@ -16,6 +16,6 @@
   hosts: solr_standalone
   roles:
     - role: lean_delivery.java
-    - role: solr-standalone
+    - role: lean_delivery.solr
   vars:
     change_default_password: False

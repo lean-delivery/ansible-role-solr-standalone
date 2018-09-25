@@ -8,6 +8,6 @@
   hosts: all
   roles:
     - role: lean_delivery.java
-    - role: solr-standalone
+    - role: lean_delivery.solr
   vars:
-    change_default_password: false
+    change_default_password: False
