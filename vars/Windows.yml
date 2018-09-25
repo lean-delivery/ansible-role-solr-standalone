@@ -1,0 +1,12 @@
+---
+dest_main_path: "{{ overrride_dest_main_path|default('C:\\Solr', True) }}"
+dest_solr_path: "{{ overrride_dest_solr_path|\
+  default(dest_main_path +'\\solr-' + solr_version, True) }}"
+
+# Windows SSL
+solr_ssl_key_store_path: "{{ overrride_solr_ssl_key_store_path|\
+  default(dest_solr_path + '\\server\\solr', True) }}"
+solr_ssl_key_store: "{{ overrride_solr_ssl_key_store|\
+  default(solr_ssl_key_store_path + '\\\\' + solr_ssl_key_store_name, True) }}"
+solr_ssl_trust_store: "{{ overrride_solr_ssl_trust_store|\
+  default(solr_ssl_key_store_path + '\\\\' + solr_ssl_key_store_name, True) }}"

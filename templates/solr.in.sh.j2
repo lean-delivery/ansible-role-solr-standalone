@@ -1,0 +1,88 @@
+# Configuration file, that Solr will use for its run
+# while starting it with 'systemctl start solr'
+
+# Increase Java Heap as needed to support your indexing / query needs
+SOLR_JAVA_MEM="-Xms{{ solr_java_xms }} -Xmx{{ solr_java_xmx }}"
+
+# Enable verbose GC logging
+GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
+-XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+
+# These GC settings have shown to work well for a number of common Solr workloads
+GC_TUNE="-XX:NewRatio=3 \
+-XX:SurvivorRatio=4 \
+-XX:TargetSurvivorRatio=90 \
+-XX:MaxTenuringThreshold=8 \
+-XX:+UseConcMarkSweepGC \
+-XX:+UseParNewGC \
+-XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 \
+-XX:+CMSScavengeBeforeRemark \
+-XX:PretenureSizeThreshold=64m \
+-XX:+UseCMSInitiatingOccupancyOnly \
+-XX:CMSInitiatingOccupancyFraction=50 \
+-XX:CMSMaxAbortablePrecleanTime=6000 \
+-XX:+CMSParallelRemarkEnabled \
+-XX:+ParallelRefProcEnabled"
+
+# Set to true to activate the JMX RMI connector to allow remote JMX client applications
+# to monitor the JVM hosting Solr; set to "false" to disable that behavior
+# (false is recommended in production environments)
+ENABLE_REMOTE_JMX_OPTS="{{solr_master_enable_jmx}}"
+
+# Set the thread stack size
+SOLR_OPTS="$SOLR_OPTS {{ solr_additional_opts }}"
+
+# Anything you add to the SOLR_OPTS variable will be included in the java
+# start command line as-is, in ADDITION to other options.
+{% if solr_clustering is defined %}
+SOLR_OPTS="$SOLR_OPTS -Dsolr.clustering.enabled={{solr_clustering}} -Xmx2G -Xms256m -Xss256k -XX:+HeapDumpOnOutOfMemoryError"
+# Impossible to chech - two strings below are commented.
+#{% else %}
+#SOLR_OPTS="$SOLR_OPTS -Dsolr.autoSoftCommit.maxTime=10000"
+{% endif %}
+
+# Location where the bin/solr script will save PID files for running instances
+# If not set, the script will create PID files in $SOLR_TIP/bin
+SOLR_PID_DIR={{ solr_base_path }}
+
+# Path to a directory for Solr to store cores and their data. By default, Solr will use server/solr
+# If solr.xml is not stored in ZooKeeper, this directory needs to contain solr.xml
+SOLR_HOME={{ solr_base_path }}/data
+
+# Solr provides a default Log4J configuration properties file in server/resources
+# however, you may want to customize the log settings and file appender location
+# so you can point the script to use a different log4j.properties file
+LOG4J_PROPS={{ solr_base_path }}/log4j.properties
+
+# Location where Solr should write logs to; should agree with the file appender
+# settings in server/resources/log4j.properties
+SOLR_LOGS_DIR={{ solr_base_path }}/logs
+
+# Sets the port Solr binds to, default is 8983
+SOLR_PORT="{{ solr_port }}"
+
+# Set the ZooKeeper connection string if using an external ZooKeeper ensemble
+# e.g. host1:2181,host2:2181/chroot
+# Leave empty if not using SolrCloud
+{% if zk_host is defined %}
+ZK_HOST="{{zk_host}}"
+{% endif %}
+
+{% if solr_auth_type is defined and solr_version is version('7.0.0', '>=') %}
+SOLR_AUTH_TYPE="{{ solr_auth_type }}"
+{% endif %}
+
+{% if solr_authentication_opts is defined and solr_version is version('7.0.0', '>=') %}
+SOLR_AUTHENTICATION_OPTS="{{ solr_authentication_opts }}"
+{% endif %}
+
+{% if solr_ssl_key_store is defined %}
+SOLR_SSL_KEY_STORE="{{ solr_ssl_key_store }}"
+SOLR_SSL_KEY_STORE_PASSWORD="{{ solr_ssl_key_store_password }}"
+SOLR_SSL_TRUST_STORE="{{ solr_ssl_trust_store }}"
+SOLR_SSL_TRUST_STORE_PASSWORD="{{ solr_ssl_trust_store_password }}"
+SOLR_SSL_NEED_CLIENT_AUTH="{{ solr_ssl_need_client_auth }}"
+SOLR_SSL_WANT_CLIENT_AUTH="{{ solr_ssl_want_client_auth }}"
+SOLR_SSL_KEY_STORE_TYPE="{{ solr_ssl_key_store_type }}"
+SOLR_SSL_TRUST_STORE_TYPE="{{ solr_ssl_trust_store_type }}"
+{% endif %}

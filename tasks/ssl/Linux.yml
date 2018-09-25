@@ -1,0 +1,98 @@
+---
+- name: "Check if keystore exists in role"
+  stat:
+    path: "{{ role_path }}/files/{{ solr_ssl_key_store_name }}"
+  delegate_to: localhost
+  register: keystore_file
+
+- name: "Copy keystore file"
+  copy:
+    src: "{{ role_path }}/files/{{ solr_ssl_key_store_name }}"
+    dest: "{{ solr_ssl_key_store }}"
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    mode: 0644
+  become: True
+  when: keystore_file.stat.exists
+
+- name: "Create private certificate"
+  openssl_privatekey:
+    path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    size: "{{ solr_ssl_key_size|int }}"
+    force: True
+  become: True
+  # https://github.com/ansible/ansible/issues/45724
+  changed_when: False
+  when: not keystore_file.stat.exists
+
+- name: "Create CSR"
+  openssl_csr:
+    path: "/tmp/{{ local_cert_file_name }}.csr"
+    privatekey_path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    common_name: "{{ ca_domain }}"
+    force: True
+  become: True
+  # https://github.com/ansible/ansible/issues/45726
+  changed_when: False
+  when: not keystore_file.stat.exists
+
+- name: "Create certificates for keystore"
+  openssl_certificate:
+    csr_path: "/tmp/{{ local_cert_file_name }}.csr"
+    path: "{{ local_cert_file_path }}/{{ local_cert_file_name }}"
+    privatekey_path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    provider: "{{ solr_ssl_certificate_provider }}"
+    force: True
+  become: True
+  # https://github.com/ansible/ansible/issues/45725
+  changed_when: False
+  when: not keystore_file.stat.exists
+
+# - name: "Create keystore"
+#   java_keystore:
+#     name: "{{ ca_domain }}"
+#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/{{ local_cert_file_name }}') }}"
+#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/{{ local_pkey_file_name }}') }}"
+#     password: "{{ solr_ssl_key_store_password }}"
+#     dest: "{{ solr_ssl_key_store }}"
+#     owner: "{{ solr_user }}"
+#     group: "{{ solr_group }}"
+#     mode: 0644
+#     force: True
+#   become: True
+#   when:
+#     - not keystore_file.stat.exists
+#     - ansible_version.full is version('2.7', '>=')
+
+- name: "Export certificate and private key into a bundle"
+  command: >
+    openssl pkcs12 -export
+    -in "{{ local_cert_file_path }}/{{ local_cert_file_name }}"
+    -inkey "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    -name "{{ ansible_hostname }}"
+    -passout pass:{{ solr_ssl_key_store_password }}
+    -out "{{ ansible_hostname }}.p12"
+  args:
+    chdir: "{{ solr_ssl_key_store_path }}/"
+    creates: "{{ ansible_hostname }}.p12"
+  become: True
+  when:
+    - not keystore_file.stat.exists
+    - ansible_version.full is version('2.7', '<')
+
+- name: "Import the PKCS12 file into a new java keystore"
+  command: >
+    /opt/jdk/jdk1.8.0_181/jre/bin/keytool
+    -importkeystore
+    -deststorepass {{ solr_ssl_key_store_password }}
+    -srcstorepass {{ solr_ssl_key_store_password }}
+    -destkeystore "{{ solr_ssl_key_store_name }}"
+    -srckeystore "{{ ansible_hostname }}.p12"
+    -srcstoretype PKCS12
+  args:
+    chdir: "{{ solr_ssl_key_store_path }}/"
+    creates: "{{ solr_ssl_key_store_name }}"
+  become: True
+  when:
+    - not keystore_file.stat.exists
+    - ansible_version.full is version('2.7', '<')

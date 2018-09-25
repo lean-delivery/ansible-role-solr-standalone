@@ -1,0 +1,15 @@
+---
+- name: "Enable EPEL repository"
+  yum:
+    name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+    state: "present"
+  become: True
+
+- name: "Choose system based task"
+  include_tasks: "system/{{ ansible_system }}.yml"
+
+- name: "Add selinux support"
+  include_tasks: selinux-support.yml
+  when:
+    - ansible_selinux.status == "enabled"
+    - not solr_service_status

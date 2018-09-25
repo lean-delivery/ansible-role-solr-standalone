@@ -1,0 +1,137 @@
+---
+- name: "Create solr directories"
+  win_file:
+    path: "{{ solr_win_dir_item }}"
+    state: directory
+  with_items:
+    - "{{ dest_solr_path }}\\data"
+    - "{{ dest_solr_path }}\\logs"
+  loop_control:
+    loop_var: solr_win_dir_item
+
+- name: "Set solr configuration file"
+  win_template:
+    src: solr.in.cmd.j2
+    dest: "{{ dest_solr_path }}\\bin\\solr.in.cmd"
+  notify: "restart solr windows"
+
+- name: "Generate basic auth config"
+  win_template:
+    src: security.json.j2
+    dest: "{{ dest_solr_path }}\\server\\solr\\security.json"
+  when:
+    - solr_auth_type is defined
+    - solr_version is version('7.0.0', '>=')
+  notify: "restart solr windows"
+
+- name: "Install nssm"
+  win_chocolatey:
+    name: "nssm"
+    state: present
+
+- name: "Create solr service"
+  win_nssm:
+    name: "{{ solr_service_name }}"
+    application: "{{ dest_solr_path }}\\bin\\solr.cmd"
+    app_parameters_free_form: "start -f"
+    state: started
+    start_mode: auto
+  notify: "restart solr windows"
+
+- name: "Force all notified handlers"
+  meta: flush_handlers
+  when:
+    - solr_auth_type is defined
+    - solr_version is version('7.0.0', '>=')
+
+- name: "Set protocol"
+  set_fact:
+    solr_proto: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}"
+
+- name: "Wait for Solr is UP"
+  run_once: True
+  win_get_url:
+    url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/"
+    dest: "{{ win_temp_dir }}\\test.html"
+    validate_certs: False
+    url_username: solr
+    url_password: SolrRocks
+  register: solr_main_page
+  until: solr_main_page.status_code == 200
+  retries: 20
+  delay: 10
+  when:
+    - solr_auth_type is defined
+    - solr_version is version('7.0.0', '>=')
+    - change_default_password
+
+# There is a bug with certificate validation for "win_uri" module (validation can't be switched off)
+# Needs to be checked on ansible 2.7.0
+# - name: "Create new admin user via API"
+#   run_once: True
+#   win_uri:
+#     url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+#     method: GET
+#     user: solr
+#     password: SolrRocks
+#     validate_certs: False
+#     headers:
+#       Content-Type: 'application/json'
+#     body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"}}'
+#   when:
+#     - solr_auth_type is defined
+#     - solr_version is version('7.0.0', '>=')
+#     - change_default_password
+#   notify:
+#     - "restart solr windows"
+#
+# - name: "Change default admin user password via API"
+#   run_once: True
+#   win_uri:
+#     url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+#     method: GET
+#     user: solr
+#     password: SolrRocks
+#     validate_certs: False
+#     headers:
+#       Content-Type: 'application/json'
+#     body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"}}'
+#   when:
+#     - solr_auth_type is defined
+#     - solr_version is version('7.0.0', '>=')
+#     - change_default_password
+#   notify:
+#     - "restart solr windows"
+
+- name: "Install curl"
+  win_chocolatey:
+    name: "curl"
+    state: present
+
+- name: "Create new admin user via API"
+  run_once: True
+  win_command: >
+    curl --user "solr:SolrRocks" -k \
+    "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication" \
+    -H "Content-type:application/json" \
+    -d "{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"}}"
+  when:
+    - solr_auth_type is defined
+    - solr_version is version('7.0.0', '>=')
+    - change_default_password
+  notify:
+    - "restart solr windows"
+
+- name: "Change default admin user password via API"
+  run_once: True
+  win_command: >
+    curl --user "solr:SolrRocks" -k \
+    "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication" \
+    -H "Content-type:application/json" \
+    -d "{"set-user": {"solr" : "{{ solr_auth_pass }}"}}"
+  when:
+    - solr_auth_type is defined
+    - solr_version is version('7.0.0', '>=')
+    - change_default_password
+  notify:
+    - "restart solr windows"

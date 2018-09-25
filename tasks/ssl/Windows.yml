@@ -1,0 +1,91 @@
+---
+- name: "Check if keystore exists in role"
+  stat:
+    path: "{{ role_path }}/files/{{ solr_ssl_key_store_name }}"
+  delegate_to: localhost
+  register: keystore_file
+
+- name: "Copy keystore file"
+  win_copy:
+    src: "{{ role_path }}/files/{{ solr_ssl_key_store_name }}"
+    dest: "{{ solr_ssl_key_store }}"
+    force: True
+  when: keystore_file.stat.exists
+
+- name: "Install OpenSSL"
+  win_chocolatey:
+    name: "openssl.light"
+    state: present
+
+- name: "Create private certificate"
+  win_command: >
+    openssl genrsa -out "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
+    "{{ solr_ssl_key_size|int }}"
+  when: not keystore_file.stat.exists
+
+- name: "Create CSR"
+  win_command: >
+    openssl req -nodes -newkey rsa:"{{ solr_ssl_key_size|int }}" \
+    -keyout "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
+    -out "{{ win_temp_dir }}\\{{ local_cert_file_name }}.csr" \
+    -subj "{{ win_ssl_subj }}"
+  when: not keystore_file.stat.exists
+
+- name: "Create certificates for keystore"
+  win_command: >
+    openssl x509 -req -days 365 \
+    -in "{{ win_temp_dir }}\\{{ local_cert_file_name }}.csr" \
+    -signkey "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
+    -out "{{ win_temp_dir }}\\{{ local_cert_file_name }}"
+  when: not keystore_file.stat.exists
+
+# - name: "Create keystore"
+#   java_keystore:
+#     name: "{{ ca_domain }}"
+#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/{{ local_cert_file_name }}') }}"
+#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/{{ local_pkey_file_name }}') }}"
+#     password: "{{ solr_ssl_key_store_password }}"
+#     dest: "{{ solr_ssl_key_store }}"
+#     owner: "{{ solr_user }}"
+#     group: "{{ solr_group }}"
+#     mode: 0644
+#     force: True
+#   when: not keystore_file.stat.exists and ( ansible_version.full is version('2.7', '>=') )
+
+- name: "Export certificate and private key into a bundle"
+  win_command: >
+    openssl pkcs12 -export
+    -in {{ win_temp_dir }}\\{{ local_cert_file_name }}
+    -inkey {{ win_temp_dir }}\\{{ local_pkey_file_name }}
+    -name {{ ansible_hostname  }}
+    -passout pass:{{ solr_ssl_key_store_password }}
+    -out {{ ansible_hostname  }}.p12
+  args:
+    chdir: "{{ win_temp_dir }}"
+    creates: "{{ win_temp_dir }}\\{{ ansible_hostname  }}.p12"
+  when:
+    - not keystore_file.stat.exists
+    - ansible_version.full is version('2.7', '<')
+
+- name: "Get java directory"
+  win_shell: "(Get-ChildItem Env:JAVA_HOME | \
+    Select-Object Value | ft -HideTableHeaders | Out-String).Trim()"
+  register: java_directory
+  when:
+    - not keystore_file.stat.exists
+
+- name: "Import the PKCS12 file into a new java keystore"
+  win_command: >
+    keytool
+    -importkeystore
+    -deststorepass {{ solr_ssl_key_store_password }}
+    -srcstorepass {{ solr_ssl_key_store_password }}
+    -destkeystore {{ solr_ssl_key_store_name }}
+    -srckeystore "{{ win_temp_dir }}\\{{ ansible_hostname  }}.p12"
+    -srcstoretype PKCS12
+  args:
+    chdir: "{{ solr_ssl_key_store_path }}"
+    creates: "{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}"
+  when:
+    - not keystore_file.stat.exists
+    - ansible_version.full is version('2.7', '<')

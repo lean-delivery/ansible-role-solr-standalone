@@ -1,0 +1,21 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: True
+  tasks: []
+
+- name: Windows instances waiting.
+  gather_facts: True
+  hosts: windows
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+        delay: 240
+
+- name: Solr-standalone
+  hosts: solr_standalone
+  roles:
+    - role: lean_delivery.java
+    - role: solr-standalone
+  vars:
+    change_default_password: False

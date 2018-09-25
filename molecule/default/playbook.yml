@@ -1,0 +1,13 @@
+---
+- name: "Force gathering facts"
+  hosts: all
+  gather_facts: True
+  roles: []
+
+- name: "Converge"
+  hosts: all
+  roles:
+    - role: lean_delivery.java
+    - role: solr-standalone
+  vars:
+    change_default_password: False

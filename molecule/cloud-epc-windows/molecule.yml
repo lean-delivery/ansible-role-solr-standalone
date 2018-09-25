@@ -1,0 +1,62 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+driver:
+  name: delegated
+lint:
+  name: yamllint
+  options:
+    config-file: molecule/yamllint.yml
+platforms:
+  - name: test-windows-solr-standalone-vm
+    image: Win10-64
+    shape: MEDIUM
+    wait_timeout: 7200
+    ssh_key: null
+    wait_configuration: False
+    scripts:
+      - createlocaladminuser.ps1
+      - configureremotingforansiblecredssp.ps1
+    groups:
+      - windows
+      - solr_standalone
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      windows:
+        # Ansible requires ansible_host variable only as a FQDN or IP address.
+        # If Windows host = the first entity in platforms section - you should link to 0 dict item.
+        # Regarding the official documentation https://docs.ansible.com/ansible/2.3/intro_windows.html#inventory
+        # It is required to specify credentials to establish a remote connection with Windows host
+        # ONLY as a group_vars or host_vars.
+        # Do not forget to use ansible_host for every Windows host which should be tested
+        ansible_host: "{{ (lookup('file', lookup('env', 'MOLECULE_INSTANCE_CONFIG')) | from_yaml).0.dns_name }}"
+        # Ansible User only has this value (<ansible_host>\\molecule)
+        ansible_user: "{{ ansible_host }}\\molecule"
+        # Ansible password consists of base64encoded password hash here
+        # The raw password is M0leCule123!
+        ansible_password: "{{ 'TTBsZUN1bGUxMjMh'| b64decode }}"
+        # Another variables also are static and shouldn't be changed without required changes in PS1 script
+        ansible_port: 5986
+        ansible_connection: winrm
+        ansible_winrm_transport: credssp
+        ansible_winrm_server_cert_validation: ignore
+  playbooks:
+    converge: playbook.yml
+  config_options:
+    ssh_connection:
+      control_path: "/var/ans/%%h"
+  lint:
+    name: ansible-lint
+  env:
+    ANSIBLE_LIBRARY:
+      /home/gitlab-runner/.local/lib/python2.7/site-packages/epam_ansible
+scenario:
+  name: cloud-epc-windows
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
