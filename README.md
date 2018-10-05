@@ -47,7 +47,7 @@ Requirements
   - `overrride_dest_solr_path` - solr folder path
     default: `{{ dest_main_path }}/solr-{{ solr_version }}`
     default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
-  - `change_default_password` - to change default password (will be solr/SolrRocks)
+  - `solr_change_default_password` - to change default password (will be solr/SolrRocks)
     default: `True`
   - `solr_auth_type` - authentication type
     default: `basic`
@@ -107,23 +107,23 @@ Requirements
     default: `JKS`
   - `solr_ssl_certificate_provider` - only for Linux os. https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
     default: `selfsigned`
-  - `ca_domain` - certificate domain name
+  - `solr_ca_domain` - certificate domain name
     default: `example.com`
   - `overrride_local_cert_file_path` - path to private cert
     default: `/etc/pki/tls/private`
     default: `/etc/ssl/private`
-  - `local_pkey_file_name` - private cert name
+  - `solr_local_pkey_file_name` - private cert name
     default: `{{ ansible_hostname }}.ca-pkey.pem`
   - `overrride_local_cert_file_path` - path to public cert
     default: `/etc/pki/tls/certs`
     default: `/etc/ssl/certs`
-  - `local_cert_file_name` -public cert name
+  - `solr_local_cert_file_name` -public cert name
     default: `{{ ansible_hostname }}.ca-cert.pem`
 # Windows variables
-  - `win_temp_dir` - temporary directory
+  - `solr_win_temp_dir` - temporary directory
     default: `C:\Windows\Temp`
-  - `win_ssl_subj` - CSR subject
-    default: `/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ ca_domain }}`
+  - `solr_win_ssl_subj` - CSR subject
+    default: `/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}`
 
 Example Inventory
 ----------------
@@ -146,7 +146,7 @@ Example Playbook
 - name: Install and Configure Solr
   hosts: solr
   vars:
-    change_default_password: False
+    solr_change_default_password: False
   roles:
     - role: lean-delivery.java
       java_major_version: 8
