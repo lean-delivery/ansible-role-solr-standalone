@@ -50,6 +50,8 @@ Requirements
     default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
   - `solr_change_default_password` - to change default password (will be solr/SolrRocks)
     default: `True`
+  - `solr_auth_configure` - Enable authentication
+    default: `True`
   - `solr_auth_type` - authentication type
     default: `basic`
   - `solr_auth_user` - default solr user

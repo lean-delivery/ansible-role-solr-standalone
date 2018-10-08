@@ -8,6 +8,7 @@ solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: "{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip"
 
 solr_change_default_password: True
+solr_auth_configure: True
 solr_auth_type: "basic"
 solr_auth_user: "solrserver"
 solr_auth_pass: "server123"
