@@ -20,6 +20,7 @@
   loop_control:
     loop_var: platform
   when:
+    - solr_ssl_configure
     - solr_ssl_key_store is defined
     - not solr_service_status
 

@@ -27,6 +27,7 @@ solr_home: "{{ solr_base_path }}/data"
 solr_with_systemd: True
 
 # SSL
+solr_ssl_configure: True
 solr_ssl_key_store_name: "solr-ssl.keystore.jks"
 solr_ssl_key_size: 4096
 solr_ssl_key_store_password: 123456
