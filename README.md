@@ -159,7 +159,7 @@ Example Playbook
 License
 -------
 
-Apache2
+Apache
 
 Author Information
 ------------------

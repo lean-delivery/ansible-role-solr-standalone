@@ -28,20 +28,20 @@
   set_fact:
     solr_service_status: "{{ solr_service_stat.stat.exists }}"
 
-- name: "Get md5 for solr  {{ solr_version }}"
+- name: "Get sha1 for solr  {{ solr_version }}"
   set_fact:
-    md5_value: "{{ md5_url_item }}"
-  with_url: "{{ solr_distr_url }}.md5"
+    sha1_value: "{{ sha1_url_item }}"
+  with_url: "{{ solr_distr_url }}.sha1"
   when: not solr_service_status
   loop_control:
-    loop_var: md5_url_item
+    loop_var: sha1_url_item
 
 # initial deployment of solr
 - name: "Download solr {{ solr_version }} archive"
   get_url:
     url: "{{ solr_distr_url }}"
     dest: "{{ dest_solr_path }}.zip"
-    checksum: md5:{{ md5_value.split(" ")[0] }}
+    checksum: sha1:{{ sha1_value.split(" ")[0] }}
   register: result
   until: result is succeeded
   retries: 10
