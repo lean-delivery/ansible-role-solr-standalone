@@ -8,6 +8,7 @@ This role:
   - Installs Solr standalone on Centos 7, Ubuntu or Windows host.
   - Configures SSL for Solr 7.0 and later
   - Configures Solr
+  - Supported Solr versions: 6.x - 7.x. The latest tested is 7.1.0
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
