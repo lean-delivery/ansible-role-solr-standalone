@@ -59,7 +59,8 @@
   when: not solr_service_status
 
 - name: "Install solr as service"
-  command: /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh {{ dest_solr_path }}.zip -f -n
+  command: /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh \
+    {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
   become: True
   when: not solr_service_status
 
