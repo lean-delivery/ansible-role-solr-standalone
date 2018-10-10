@@ -52,7 +52,7 @@
   run_once: True
   win_get_url:
     url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/"
-    dest: "{{ win_temp_dir }}\\test.html"
+    dest: "{{ solr_win_temp_dir }}\\test.html"
     validate_certs: False
     url_username: solr
     url_password: SolrRocks
@@ -63,7 +63,7 @@
   when:
     - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
 
 # There is a bug with certificate validation for "win_uri" module (validation can't be switched off)
 # Needs to be checked on ansible 2.7.0
@@ -81,7 +81,7 @@
 #   when:
 #     - solr_auth_type is defined
 #     - solr_version is version('7.0.0', '>=')
-#     - change_default_password
+#     - solr_change_default_password
 #   notify:
 #     - "restart solr windows"
 #
@@ -99,7 +99,7 @@
 #   when:
 #     - solr_auth_type is defined
 #     - solr_version is version('7.0.0', '>=')
-#     - change_default_password
+#     - solr_change_default_password
 #   notify:
 #     - "restart solr windows"
 
@@ -118,7 +118,7 @@
   when:
     - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
   notify:
     - "restart solr windows"
 
@@ -132,6 +132,6 @@
   when:
     - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
   notify:
     - "restart solr windows"

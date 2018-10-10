@@ -17,7 +17,7 @@
 
 - name: "Create private certificate"
   openssl_privatekey:
-    path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    path: "{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}"
     size: "{{ solr_ssl_key_size|int }}"
     force: True
   become: True
@@ -27,9 +27,9 @@
 
 - name: "Create CSR"
   openssl_csr:
-    path: "/tmp/{{ local_cert_file_name }}.csr"
-    privatekey_path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
-    common_name: "{{ ca_domain }}"
+    path: "/tmp/{{ solr_local_cert_file_name }}.csr"
+    privatekey_path: "{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}"
+    common_name: "{{ solr_ca_domain }}"
     force: True
   become: True
   # https://github.com/ansible/ansible/issues/45726
@@ -38,9 +38,9 @@
 
 - name: "Create certificates for keystore"
   openssl_certificate:
-    csr_path: "/tmp/{{ local_cert_file_name }}.csr"
-    path: "{{ local_cert_file_path }}/{{ local_cert_file_name }}"
-    privatekey_path: "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    csr_path: "/tmp/{{ solr_local_cert_file_name }}.csr"
+    path: "{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}"
+    privatekey_path: "{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}"
     provider: "{{ solr_ssl_certificate_provider }}"
     force: True
   become: True
@@ -50,9 +50,11 @@
 
 # - name: "Create keystore"
 #   java_keystore:
-#     name: "{{ ca_domain }}"
-#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/{{ local_cert_file_name }}') }}"
-#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/{{ local_pkey_file_name }}') }}"
+#     name: "{{ solr_ca_domain }}"
+#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/\
+#     {{ solr_local_cert_file_name }}') }}"
+#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/\
+#     {{ solr_local_pkey_file_name }}') }}"
 #     password: "{{ solr_ssl_key_store_password }}"
 #     dest: "{{ solr_ssl_key_store }}"
 #     owner: "{{ solr_user }}"
@@ -67,8 +69,8 @@
 - name: "Export certificate and private key into a bundle"
   command: >
     openssl pkcs12 -export
-    -in "{{ local_cert_file_path }}/{{ local_cert_file_name }}"
-    -inkey "{{ local_pkey_file_path }}/{{ local_pkey_file_name }}"
+    -in "{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}"
+    -inkey "{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}"
     -name "{{ ansible_hostname }}"
     -passout pass:{{ solr_ssl_key_store_password }}
     -out "{{ ansible_hostname }}.p12"

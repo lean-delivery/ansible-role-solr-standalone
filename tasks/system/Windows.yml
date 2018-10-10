@@ -11,13 +11,13 @@
 - name: "Download solr {{ solr_version }}"
   win_get_url:
     url: "{{ solr_distr_url }}"
-    dest: "{{ win_temp_dir }}\\{{ solr_version }}.zip"
+    dest: "{{ solr_win_temp_dir }}\\{{ solr_version }}.zip"
     force: False
   when: not solr_service_status
 
 - name: "Unzip solr {{ solr_version }}"
   win_unzip:
-    src: "{{ win_temp_dir }}\\{{ solr_version }}.zip"
+    src: "{{ solr_win_temp_dir }}\\{{ solr_version }}.zip"
     dest: "{{ dest_main_path }}"
     creates: "{{ dest_solr_path }}"
   when: not solr_service_status

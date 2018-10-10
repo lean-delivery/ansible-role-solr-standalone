@@ -7,7 +7,7 @@ solr_version: 7.1.0
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: "{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip"
 
-change_default_password: True
+solr_change_default_password: True
 solr_auth_type: "basic"
 solr_auth_user: "solrserver"
 solr_auth_pass: "server123"
@@ -38,10 +38,10 @@ solr_ssl_trust_store_type: JKS
 solr_ssl_certificate_provider: selfsigned
 
 # Certificate
-ca_domain: "example.com"
-local_pkey_file_name: "{{ ansible_hostname }}.ca-pkey.pem"
-local_cert_file_name: "{{ ansible_hostname }}.ca-cert.pem"
+solr_ca_domain: "example.com"
+solr_local_pkey_file_name: "{{ ansible_hostname }}.ca-pkey.pem"
+solr_local_cert_file_name: "{{ ansible_hostname }}.ca-cert.pem"
 
 # Windows vars
-win_temp_dir: C:\Windows\Temp
-win_ssl_subj: "/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ ca_domain }}"
+solr_win_temp_dir: C:\Windows\Temp
+solr_win_ssl_subj: "/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}"

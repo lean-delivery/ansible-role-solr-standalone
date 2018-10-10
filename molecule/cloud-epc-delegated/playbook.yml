@@ -10,4 +10,4 @@
     - role: lean_delivery.java
     - role: ansible-role-solr-standalone
   vars:
-    change_default_password: False
+    solr_change_default_password: False
