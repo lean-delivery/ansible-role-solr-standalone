@@ -79,6 +79,8 @@ Requirements
     default: `/var/solr`
   - `solr_with_systemd` - to run solr as a service
     default: `True`
+  - `solr_logs_dir` - path to store logs
+    default: `{{ solr_base_path }}/logs`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
   - `solr_ssl_key_size` - certificate key size
     default: 4096

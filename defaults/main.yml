@@ -24,6 +24,7 @@ solr_port: 8983
 solr_service_name: "solr"
 solr_base_path: /var/solr
 solr_with_systemd: True
+solr_logs_dir: "{{ solr_base_path }}/logs"
 
 # SSL
 solr_ssl_key_store_name: "solr-ssl.keystore.jks"
