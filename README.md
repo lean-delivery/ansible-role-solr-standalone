@@ -78,6 +78,8 @@ Requirements
     default: `solr`
   - `solr_base_path` - path to solr base
     default: `/var/solr`
+  - `solr_home` - path to SOLR_HOME
+    default: `{{ solr_base_path }}/data`
   - `solr_with_systemd` - to run solr as a service
     default: `True`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html

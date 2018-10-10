@@ -23,6 +23,7 @@ solr_group: "solr"
 solr_port: 8983
 solr_service_name: "solr"
 solr_base_path: /var/solr
+solr_home: "{{ solr_base_path }}/data"
 solr_with_systemd: True
 
 # SSL
