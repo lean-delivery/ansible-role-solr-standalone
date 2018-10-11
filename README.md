@@ -83,6 +83,8 @@ Requirements
   - `solr_with_systemd` - to run solr as a service
     default: `True`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
+  - `solr_ssl_configure` - configure SSL
+    default: `True`
   - `solr_ssl_key_size` - certificate key size
     default: 4096
   - `overrride_solr_ssl_key_store_path` - directory to store keystore

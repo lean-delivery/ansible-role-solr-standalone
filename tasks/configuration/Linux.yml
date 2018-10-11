@@ -38,7 +38,7 @@
 
 - name: "Wait for Solr is UP"
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr"
     status_code: 200
     validate_certs: False
@@ -56,7 +56,7 @@
 
 - name: Create admin user via API
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
     method: POST
     user: solr
@@ -77,7 +77,7 @@
 
 - name: "Change default admin user password via API"
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
     method: POST
     user: solr

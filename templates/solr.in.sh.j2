@@ -76,7 +76,7 @@ SOLR_AUTH_TYPE="{{ solr_auth_type }}"
 SOLR_AUTHENTICATION_OPTS="{{ solr_authentication_opts }}"
 {% endif %}
 
-{% if solr_ssl_key_store is defined %}
+{% if solr_ssl_configure and solr_ssl_key_store is defined %}
 SOLR_SSL_KEY_STORE="{{ solr_ssl_key_store }}"
 SOLR_SSL_KEY_STORE_PASSWORD="{{ solr_ssl_key_store_password }}"
 SOLR_SSL_TRUST_STORE="{{ solr_ssl_trust_store }}"
