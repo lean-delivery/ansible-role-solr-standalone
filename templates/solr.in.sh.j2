@@ -68,11 +68,11 @@ SOLR_PORT="{{ solr_port }}"
 ZK_HOST="{{zk_host}}"
 {% endif %}
 
-{% if solr_auth_type is defined and solr_version is version('7.0.0', '>=') %}
+{% if solr_auth_configure and solr_auth_type is defined and solr_version is version('7.0.0', '>=') %}
 SOLR_AUTH_TYPE="{{ solr_auth_type }}"
 {% endif %}
 
-{% if solr_authentication_opts is defined and solr_version is version('7.0.0', '>=') %}
+{% if solr_auth_configure and solr_authentication_opts is defined and solr_version is version('7.0.0', '>=') %}
 SOLR_AUTHENTICATION_OPTS="{{ solr_authentication_opts }}"
 {% endif %}
 
