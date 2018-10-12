@@ -46,6 +46,11 @@ solr_ca_domain: "example.com"
 solr_local_pkey_file_name: "{{ ansible_hostname }}.ca-pkey.pem"
 solr_local_cert_file_name: "{{ ansible_hostname }}.ca-cert.pem"
 
+# Linux limits set
+solr_set_limits: True
+solr_open_files_limit: 65000
+solr_max_processes_limit: 65000
+
 # Windows vars
 solr_win_temp_dir: C:\Windows\Temp
 solr_win_ssl_subj: "/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}"

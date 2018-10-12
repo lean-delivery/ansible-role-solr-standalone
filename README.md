@@ -128,6 +128,12 @@ Requirements
     default: `/etc/ssl/certs`
   - `solr_local_cert_file_name` -public cert name
     default: `{{ ansible_hostname }}.ca-cert.pem`
+  - `solr_set_limits` - to set limits
+    default: `True`
+  - `solr_open_files_limit` - linux open files limit value
+    default: `65000`
+  - `solr_max_processes_limit` - linux max processes limit value
+    default: `65000`
 # Windows variables
   - `solr_win_temp_dir` - temporary directory
     default: `C:\Windows\Temp`
