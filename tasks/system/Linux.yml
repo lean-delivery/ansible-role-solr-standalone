@@ -19,6 +19,24 @@
     state: present
   become: True
 
+- name: "Set open files limit"
+  pam_limits:
+    domain: "{{ solr_user }}"
+    limit_item: "nofile"
+    limit_type: "-"
+    value: "{{ solr_open_files_limit }}"
+  when: solr_set_limits
+  become: True
+
+- name: "Set max processes limit"
+  pam_limits:
+    domain: "{{ solr_user }}"
+    limit_item: "nproc"
+    limit_type: "-"
+    value: "{{ solr_max_processes_limit }}"
+  when: solr_set_limits
+  become: True
+
 - name: "Check if Solr Service Exists"
   stat:
     path: /etc/init.d/solr
