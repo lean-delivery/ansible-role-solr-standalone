@@ -42,10 +42,10 @@ Requirements
     default: `http://archive.apache.org/dist/lucene/solr`
   - `solr_distr_url` - url to zip file
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
-  - `overrride_dest_main_path` - root directory to store solr folder
+  - `override_dest_main_path` - root directory to store solr folder
     default: `/opt`
     default: `C:\Solr`
-  - `overrride_dest_solr_path` - solr folder path
+  - `override_dest_solr_path` - solr folder path
     default: `{{ dest_main_path }}/solr-{{ solr_version }}`
     default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
   - `solr_change_default_password` - to change default password (will be solr/SolrRocks)
@@ -91,17 +91,17 @@ Requirements
     default: `True`
   - `solr_ssl_key_size` - certificate key size
     default: 4096
-  - `overrride_solr_ssl_key_store_path` - directory to store keystore
+  - `override_solr_ssl_key_store_path` - directory to store keystore
     default: `{{ dest_solr_path }}/server/solr`
     default: `{{ dest_solr_path }}\\server\\solr`
   - `solr_ssl_key_store_name` - keystore name. If file with such name exists in role folder/files - it will be used as keystore.
     default: `solr-ssl.keystore.jks`
-  - `overrride_solr_ssl_key_store` - path to solr keystore.
+  - `override_solr_ssl_key_store` - path to solr keystore.
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
     default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_key_store_password` - keystore password
     default: `123456`
-  - `overrride_solr_ssl_trust_store` - path to trust keystore
+  - `override_solr_ssl_trust_store` - path to trust keystore
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
     default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_trust_store_password` - trusted keystore password
@@ -118,12 +118,12 @@ Requirements
     default: `selfsigned`
   - `solr_ca_domain` - certificate domain name
     default: `example.com`
-  - `overrride_local_cert_file_path` - path to private cert
+  - `override_local_cert_file_path` - path to private cert
     default: `/etc/pki/tls/private`
     default: `/etc/ssl/private`
   - `solr_local_pkey_file_name` - private cert name
     default: `{{ ansible_hostname }}.ca-pkey.pem`
-  - `overrride_local_cert_file_path` - path to public cert
+  - `override_local_cert_file_path` - path to public cert
     default: `/etc/pki/tls/certs`
     default: `/etc/ssl/certs`
   - `solr_local_cert_file_name` -public cert name

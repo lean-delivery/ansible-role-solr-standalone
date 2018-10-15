@@ -8,17 +8,17 @@ requirements:
   - "unzip"
   - "lsof"
 
-dest_main_path: "{{ overrride_dest_main_path|default('/opt', True) }}"
-dest_solr_path: "{{ overrride_dest_solr_path|\
+dest_main_path: "{{ override_dest_main_path|default('/opt', True) }}"
+dest_solr_path: "{{ override_dest_solr_path|\
   default(dest_main_path + '/solr-' + solr_version, True) }}"
 # SSL
-solr_ssl_key_store_path: "{{ overrride_solr_ssl_key_store_path|\
+solr_ssl_key_store_path: "{{ override_solr_ssl_key_store_path|\
   default(dest_solr_path + '/server/solr', True) }}"
-solr_ssl_key_store: "{{ overrride_solr_ssl_key_store|\
+solr_ssl_key_store: "{{ override_solr_ssl_key_store|\
   default(solr_ssl_key_store_path + '/' + solr_ssl_key_store_name, True) }}"
-solr_ssl_trust_store: "{{ overrride_solr_ssl_trust_store|\
+solr_ssl_trust_store: "{{ override_solr_ssl_trust_store|\
   default(solr_ssl_key_store_path  + '/' + solr_ssl_key_store_name, True) }}"
-local_cert_file_path: "{{ overrride_local_cert_file_path|\
+local_cert_file_path: "{{ override_local_cert_file_path|\
   default('/etc/ssl/certs', True) }}"
-local_pkey_file_path: "{{ overrride_local_pkey_file_path|\
+local_pkey_file_path: "{{ override_local_pkey_file_path|\
   default('/etc/ssl/private', True) }}"
