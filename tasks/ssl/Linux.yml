@@ -78,6 +78,8 @@
     chdir: "{{ solr_ssl_key_store_path }}/"
     creates: "{{ ansible_hostname }}.p12"
   become: True
+  become_flags: '-i'
+  become_method: sudo
   when:
     - not keystore_file.stat.exists
     - ansible_version.full is version('2.7', '<')
@@ -95,6 +97,8 @@
     chdir: "{{ solr_ssl_key_store_path }}/"
     creates: "{{ solr_ssl_key_store_name }}"
   become: True
+  become_flags: '-i'
+  become_method: sudo
   when:
     - not keystore_file.stat.exists
     - ansible_version.full is version('2.7', '<')
