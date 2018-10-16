@@ -20,7 +20,7 @@
     src: security.json.j2
     dest: "{{ dest_solr_path }}\\server\\solr\\security.json"
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
   notify: "restart solr windows"
 
@@ -41,12 +41,12 @@
 - name: "Force all notified handlers"
   meta: flush_handlers
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
 
 - name: "Set protocol"
   set_fact:
-    solr_proto: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}"
+    solr_proto: "{{ (solr_ssl_configure == True) | ternary('https', 'http') }}"
 
 - name: "Wait for Solr is UP"
   run_once: True
@@ -61,7 +61,7 @@
   retries: 20
   delay: 10
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
@@ -79,7 +79,7 @@
 #       Content-Type: 'application/json'
 #     body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"}}'
 #   when:
-#     - solr_auth_type is defined
+#     - solr_auth_configure
 #     - solr_version is version('7.0.0', '>=')
 #     - solr_change_default_password
 #   notify:
@@ -97,7 +97,7 @@
 #       Content-Type: 'application/json'
 #     body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"}}'
 #   when:
-#     - solr_auth_type is defined
+#     - solr_auth_configure
 #     - solr_version is version('7.0.0', '>=')
 #     - solr_change_default_password
 #   notify:
@@ -116,7 +116,7 @@
     -H "Content-type:application/json" \
     -d "{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"}}"
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
@@ -130,7 +130,7 @@
     -H "Content-type:application/json" \
     -d "{"set-user": {"solr" : "{{ solr_auth_pass }}"}}"
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:

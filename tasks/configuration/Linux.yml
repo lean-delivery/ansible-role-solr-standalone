@@ -29,7 +29,6 @@
   become: True
   when:
     - solr_auth_configure
-    - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
   notify:
     - "restart solr linux"
@@ -52,7 +51,6 @@
   delay: 10
   when:
     - solr_auth_configure
-    - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
@@ -72,7 +70,6 @@
   become: True
   when:
     - solr_auth_configure
-    - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
@@ -94,7 +91,6 @@
   become: True
   when:
     - solr_auth_configure
-    - solr_auth_type is defined
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
