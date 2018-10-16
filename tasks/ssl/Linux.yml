@@ -84,7 +84,7 @@
 
 - name: "Import the PKCS12 file into a new java keystore"
   command: >
-    /opt/jdk/jdk1.8.0_181/jre/bin/keytool
+    keytool
     -importkeystore
     -deststorepass {{ solr_ssl_key_store_password }}
     -srcstorepass {{ solr_ssl_key_store_password }}
