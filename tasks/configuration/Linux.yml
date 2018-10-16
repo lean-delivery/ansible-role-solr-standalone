@@ -28,7 +28,7 @@
     mode: 0755
   become: True
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
   notify:
     - "restart solr linux"
@@ -38,7 +38,7 @@
 
 - name: "Wait for Solr is UP"
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr"
     status_code: 200
     validate_certs: False
@@ -50,13 +50,13 @@
   retries: 20
   delay: 10
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
 
 - name: Create admin user via API
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
     method: POST
     user: solr
@@ -69,15 +69,15 @@
     body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"}}'
   become: True
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
   notify:
     - "restart solr linux"
 
 - name: "Change default admin user password via API"
   uri:
-    url: "{{ (solr_ssl_key_store is defined) | ternary('https', 'http') }}://\
+    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
     method: POST
     user: solr
@@ -90,8 +90,8 @@
     body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"}}'
   become: True
   when:
-    - solr_auth_type is defined
+    - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-    - change_default_password
+    - solr_change_default_password
   notify:
     - "restart solr linux"

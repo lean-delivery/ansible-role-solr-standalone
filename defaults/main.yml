@@ -7,7 +7,8 @@ solr_version: 7.1.0
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: "{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip"
 
-change_default_password: True
+solr_change_default_password: True
+solr_auth_configure: True
 solr_auth_type: "basic"
 solr_auth_user: "solrserver"
 solr_auth_pass: "server123"
@@ -23,9 +24,12 @@ solr_group: "solr"
 solr_port: 8983
 solr_service_name: "solr"
 solr_base_path: /var/solr
+solr_home: "{{ solr_base_path }}/data"
 solr_with_systemd: True
+solr_logs_dir: "{{ solr_base_path }}/logs"
 
 # SSL
+solr_ssl_configure: True
 solr_ssl_key_store_name: "solr-ssl.keystore.jks"
 solr_ssl_key_size: 4096
 solr_ssl_key_store_password: 123456
@@ -38,10 +42,15 @@ solr_ssl_trust_store_type: JKS
 solr_ssl_certificate_provider: selfsigned
 
 # Certificate
-ca_domain: "example.com"
-local_pkey_file_name: "{{ ansible_hostname }}.ca-pkey.pem"
-local_cert_file_name: "{{ ansible_hostname }}.ca-cert.pem"
+solr_ca_domain: "example.com"
+solr_local_pkey_file_name: "{{ ansible_hostname }}.ca-pkey.pem"
+solr_local_cert_file_name: "{{ ansible_hostname }}.ca-cert.pem"
+
+# Linux limits set
+solr_set_limits: True
+solr_open_files_limit: 65000
+solr_max_processes_limit: 65000
 
 # Windows vars
-win_temp_dir: C:\Windows\Temp
-win_ssl_subj: "/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ ca_domain }}"
+solr_win_temp_dir: C:\Windows\Temp
+solr_win_ssl_subj: "/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}"

@@ -47,7 +47,7 @@ SOLR_PID_DIR={{ solr_base_path }}
 
 # Path to a directory for Solr to store cores and their data. By default, Solr will use server/solr
 # If solr.xml is not stored in ZooKeeper, this directory needs to contain solr.xml
-SOLR_HOME={{ solr_base_path }}/data
+SOLR_HOME={{ solr_home }}
 
 # Solr provides a default Log4J configuration properties file in server/resources
 # however, you may want to customize the log settings and file appender location
@@ -56,7 +56,7 @@ LOG4J_PROPS={{ solr_base_path }}/log4j.properties
 
 # Location where Solr should write logs to; should agree with the file appender
 # settings in server/resources/log4j.properties
-SOLR_LOGS_DIR={{ solr_base_path }}/logs
+SOLR_LOGS_DIR={{ solr_logs_dir }}
 
 # Sets the port Solr binds to, default is 8983
 SOLR_PORT="{{ solr_port }}"
@@ -68,15 +68,15 @@ SOLR_PORT="{{ solr_port }}"
 ZK_HOST="{{zk_host}}"
 {% endif %}
 
-{% if solr_auth_type is defined and solr_version is version('7.0.0', '>=') %}
+{% if solr_auth_configure and solr_version is version('7.0.0', '>=') %}
 SOLR_AUTH_TYPE="{{ solr_auth_type }}"
 {% endif %}
 
-{% if solr_authentication_opts is defined and solr_version is version('7.0.0', '>=') %}
+{% if solr_auth_configure and solr_version is version('7.0.0', '>=') %}
 SOLR_AUTHENTICATION_OPTS="{{ solr_authentication_opts }}"
 {% endif %}
 
-{% if solr_ssl_key_store is defined %}
+{% if solr_ssl_configure %}
 SOLR_SSL_KEY_STORE="{{ solr_ssl_key_store }}"
 SOLR_SSL_KEY_STORE_PASSWORD="{{ solr_ssl_key_store_password }}"
 SOLR_SSL_TRUST_STORE="{{ solr_ssl_trust_store }}"

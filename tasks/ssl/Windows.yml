@@ -19,31 +19,33 @@
 
 - name: "Create private certificate"
   win_command: >
-    openssl genrsa -out "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
+    openssl genrsa -out "{{ solr_win_temp_dir }}\\{{ solr_local_pkey_file_name }}" \
     "{{ solr_ssl_key_size|int }}"
   when: not keystore_file.stat.exists
 
 - name: "Create CSR"
   win_command: >
     openssl req -nodes -newkey rsa:"{{ solr_ssl_key_size|int }}" \
-    -keyout "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
-    -out "{{ win_temp_dir }}\\{{ local_cert_file_name }}.csr" \
-    -subj "{{ win_ssl_subj }}"
+    -keyout "{{ solr_win_temp_dir }}\\{{ solr_local_pkey_file_name }}" \
+    -out "{{ solr_win_temp_dir }}\\{{ solr_local_cert_file_name }}.csr" \
+    -subj "{{ solr_win_ssl_subj }}"
   when: not keystore_file.stat.exists
 
 - name: "Create certificates for keystore"
   win_command: >
     openssl x509 -req -days 365 \
-    -in "{{ win_temp_dir }}\\{{ local_cert_file_name }}.csr" \
-    -signkey "{{ win_temp_dir }}\\{{ local_pkey_file_name }}" \
-    -out "{{ win_temp_dir }}\\{{ local_cert_file_name }}"
+    -in "{{ solr_win_temp_dir }}\\{{ solr_local_cert_file_name }}.csr" \
+    -signkey "{{ solr_win_temp_dir }}\\{{ solr_local_pkey_file_name }}" \
+    -out "{{ solr_win_temp_dir }}\\{{ solr_local_cert_file_name }}"
   when: not keystore_file.stat.exists
 
 # - name: "Create keystore"
 #   java_keystore:
-#     name: "{{ ca_domain }}"
-#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/{{ local_cert_file_name }}') }}"
-#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/{{ local_pkey_file_name }}') }}"
+#     name: "{{ solr_ca_domain }}"
+#     certificate: "{{lookup('file', '{{ local_cert_file_path }}/\
+#     {{ solr_local_cert_file_name }}') }}"
+#     private_key: "{{lookup('file', '{{ local_pkey_file_path }}/\
+#     {{ solr_local_pkey_file_name }}') }}"
 #     password: "{{ solr_ssl_key_store_password }}"
 #     dest: "{{ solr_ssl_key_store }}"
 #     owner: "{{ solr_user }}"
@@ -55,14 +57,14 @@
 - name: "Export certificate and private key into a bundle"
   win_command: >
     openssl pkcs12 -export
-    -in {{ win_temp_dir }}\\{{ local_cert_file_name }}
-    -inkey {{ win_temp_dir }}\\{{ local_pkey_file_name }}
+    -in {{ solr_win_temp_dir }}\\{{ solr_local_cert_file_name }}
+    -inkey {{ solr_win_temp_dir }}\\{{ solr_local_pkey_file_name }}
     -name {{ ansible_hostname  }}
     -passout pass:{{ solr_ssl_key_store_password }}
     -out {{ ansible_hostname  }}.p12
   args:
-    chdir: "{{ win_temp_dir }}"
-    creates: "{{ win_temp_dir }}\\{{ ansible_hostname  }}.p12"
+    chdir: "{{ solr_win_temp_dir }}"
+    creates: "{{ solr_win_temp_dir }}\\{{ ansible_hostname  }}.p12"
   when:
     - not keystore_file.stat.exists
     - ansible_version.full is version('2.7', '<')
@@ -81,7 +83,7 @@
     -deststorepass {{ solr_ssl_key_store_password }}
     -srcstorepass {{ solr_ssl_key_store_password }}
     -destkeystore {{ solr_ssl_key_store_name }}
-    -srckeystore "{{ win_temp_dir }}\\{{ ansible_hostname  }}.p12"
+    -srckeystore "{{ solr_win_temp_dir }}\\{{ ansible_hostname  }}.p12"
     -srcstoretype PKCS12
   args:
     chdir: "{{ solr_ssl_key_store_path }}"

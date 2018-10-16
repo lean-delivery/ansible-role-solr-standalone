@@ -8,6 +8,7 @@ This role:
   - Installs Solr standalone on Centos 7, Ubuntu or Windows host.
   - Configures SSL for Solr 7.0 and later
   - Configures Solr
+  - Supported Solr versions: 6.x - 7.x. The latest tested is 7.1.0
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
@@ -41,13 +42,15 @@ Requirements
     default: `http://archive.apache.org/dist/lucene/solr`
   - `solr_distr_url` - url to zip file
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
-  - `overrride_dest_main_path` - root directory to store solr folder
+  - `override_dest_main_path` - root directory to store solr folder
     default: `/opt`
     default: `C:\Solr`
-  - `overrride_dest_solr_path` - solr folder path
+  - `override_dest_solr_path` - solr folder path
     default: `{{ dest_main_path }}/solr-{{ solr_version }}`
     default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
-  - `change_default_password` - to change default password (will be solr/SolrRocks)
+  - `solr_change_default_password` - to change default password (will be solr/SolrRocks)
+    default: `True`
+  - `solr_auth_configure` - Enable authentication
     default: `True`
   - `solr_auth_type` - authentication type
     default: `basic`
@@ -77,22 +80,28 @@ Requirements
     default: `solr`
   - `solr_base_path` - path to solr base
     default: `/var/solr`
+  - `solr_home` - path to SOLR_HOME
+    default: `{{ solr_base_path }}/data`
   - `solr_with_systemd` - to run solr as a service
     default: `True`
+  - `solr_logs_dir` - path to store logs
+    default: `{{ solr_base_path }}/logs`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
+  - `solr_ssl_configure` - configure SSL
+    default: `True`
   - `solr_ssl_key_size` - certificate key size
     default: 4096
-  - `overrride_solr_ssl_key_store_path` - directory to store keystore
+  - `override_solr_ssl_key_store_path` - directory to store keystore
     default: `{{ dest_solr_path }}/server/solr`
     default: `{{ dest_solr_path }}\\server\\solr`
   - `solr_ssl_key_store_name` - keystore name. If file with such name exists in role folder/files - it will be used as keystore.
     default: `solr-ssl.keystore.jks`
-  - `overrride_solr_ssl_key_store` - path to solr keystore.
+  - `override_solr_ssl_key_store` - path to solr keystore.
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
     default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_key_store_password` - keystore password
     default: `123456`
-  - `overrride_solr_ssl_trust_store` - path to trust keystore
+  - `override_solr_ssl_trust_store` - path to trust keystore
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
     default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_trust_store_password` - trusted keystore password
@@ -107,23 +116,29 @@ Requirements
     default: `JKS`
   - `solr_ssl_certificate_provider` - only for Linux os. https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
     default: `selfsigned`
-  - `ca_domain` - certificate domain name
+  - `solr_ca_domain` - certificate domain name
     default: `example.com`
-  - `overrride_local_cert_file_path` - path to private cert
+  - `override_local_cert_file_path` - path to private cert
     default: `/etc/pki/tls/private`
     default: `/etc/ssl/private`
-  - `local_pkey_file_name` - private cert name
+  - `solr_local_pkey_file_name` - private cert name
     default: `{{ ansible_hostname }}.ca-pkey.pem`
-  - `overrride_local_cert_file_path` - path to public cert
+  - `override_local_cert_file_path` - path to public cert
     default: `/etc/pki/tls/certs`
     default: `/etc/ssl/certs`
-  - `local_cert_file_name` -public cert name
+  - `solr_local_cert_file_name` -public cert name
     default: `{{ ansible_hostname }}.ca-cert.pem`
+  - `solr_set_limits` - to set limits
+    default: `True`
+  - `solr_open_files_limit` - linux open files limit value
+    default: `65000`
+  - `solr_max_processes_limit` - linux max processes limit value
+    default: `65000`
 # Windows variables
-  - `win_temp_dir` - temporary directory
+  - `solr_win_temp_dir` - temporary directory
     default: `C:\Windows\Temp`
-  - `win_ssl_subj` - CSR subject
-    default: `/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ ca_domain }}`
+  - `solr_win_ssl_subj` - CSR subject
+    default: `/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}`
 
 Example Inventory
 ----------------
@@ -146,7 +161,7 @@ Example Playbook
 - name: Install and Configure Solr
   hosts: solr
   vars:
-    change_default_password: False
+    solr_change_default_password: False
   roles:
     - role: lean-delivery.java
       java_major_version: 8
