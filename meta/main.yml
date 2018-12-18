@@ -20,15 +20,11 @@ galaxy_info:
         - "7"
     - name: "Windows"
       versions:
-        - "Windows Server 2008"
-        - "Windows Server 2008 R2"
-        - "Windows Server 2012"
-        - "Windows Server 2012 R2"
-        - "Windows Server 2016"
-        - "Windows 7"
-        - "Windows 8.1"
-        - "Windows 10"
-
+        - "2008x64"
+        - "2008R2"
+        - "2012"
+        - "2012R2"
+        - "2016"
 
   galaxy_tags:
     - "development"
