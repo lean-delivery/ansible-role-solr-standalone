@@ -2,7 +2,7 @@
 ## Global application env settings
 ## SOLR_Options
 
-solr_version: 7.1.0
+solr_version: 7.6.0
 
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: "{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip"
@@ -27,6 +27,9 @@ solr_base_path: /var/solr
 solr_home: "{{ solr_base_path }}/data"
 solr_with_systemd: True
 solr_logs_dir: "{{ solr_base_path }}/logs"
+solr_wait_for_zk: 30
+solr_client_timeout: 15000
+solr_timezone: 'UTC'
 
 # SSL
 solr_ssl_configure: True
@@ -38,6 +41,7 @@ solr_ssl_need_client_auth: "false"
 solr_ssl_want_client_auth: "false"
 solr_ssl_key_store_type: JKS
 solr_ssl_trust_store_type: JKS
+solr_ssl_check_peer_name: "true"
 # https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
 solr_ssl_certificate_provider: selfsigned
 

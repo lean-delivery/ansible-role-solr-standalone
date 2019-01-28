@@ -45,14 +45,14 @@ set ZK_HOST={{ zk_host }}
 {% endif %}
 
 REM Set the ZooKeeper client timeout (for SolrCloud mode)
-REM set ZK_CLIENT_TIMEOUT=15000
+REM set ZK_CLIENT_TIMEOUT={{ solr_client_timeout }}
 
 REM By default the start script uses "localhost"; override the hostname here
 REM for production SolrCloud environments to control the hostname exposed to cluster state
 REM set SOLR_HOST=192.168.1.1
 
 REM By default the start script uses UTC; override the timezone if needed
-REM set SOLR_TIMEZONE=UTC
+set SOLR_TIMEZONE={{ solr_timezone }}
 
 REM Set to true to activate the JMX RMI connector to allow remote JMX client applications
 REM to monitor the JVM hosting Solr; set to "false" to disable that behavior
@@ -96,6 +96,9 @@ REM set SOLR_JETTY_HOST=0.0.0.0
 REM Sets the port Solr binds to, default is 8983
 set SOLR_PORT={{ solr_port }}
 
+REM By default Solr will try to connect to Zookeeper with 30 seconds in timeout; override the timeout if needed
+set SOLR_WAIT_FOR_ZK={{ solr_wait_for_zk }}
+
 REM Enables HTTPS. It is implictly true if you set SOLR_SSL_KEY_STORE. Use this config
 REM to enable https module with custom jetty configuration.
 REM set SOLR_SSL_ENABLED=true
@@ -110,6 +113,7 @@ set SOLR_SSL_TRUST_STORE_TYPE={{ solr_ssl_trust_store_type }}
 set SOLR_SSL_KEY_STORE_TYPE={{ solr_ssl_key_store_type }}
 set SOLR_SSL_NEED_CLIENT_AUTH={{ solr_ssl_need_client_auth }}
 set SOLR_SSL_WANT_CLIENT_AUTH={{ solr_ssl_want_client_auth }}
+set SOLR_SSL_CHECK_PEER_NAME={{ solr_ssl_check_peer_name }}
 {% endif %}
 REM Uncomment if you want to override previously defined SSL values for HTTP client
 REM otherwise keep them commented and the above values will automatically be set for HTTP clients

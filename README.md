@@ -89,6 +89,12 @@ Requirements
     default: `True`
   - `solr_logs_dir` - path to store logs
     default: `{{ solr_base_path }}/logs`
+  - `solr_wait_for_zk` - timeout to reconnect to zookeeper (in seconds)
+    default: `30`
+  - `solr_client_timeout` - ZooKeeper client timeout (for SolrCloud mode)
+    default: `15000`
+  - `solr_timezone` - timezone for solr server
+    default: `UTC`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
   - `solr_ssl_configure` - configure SSL
     default: `True`
@@ -117,6 +123,8 @@ Requirements
     default: `JKS`
   - `solr_ssl_trust_store_type` - trusted keystore path
     default: `JKS`
+  - `solr_ssl_check_peer_name` - Setting this to false can be useful to disable these checks when re-using a certificate on many hosts
+    default: `true`
   - `solr_ssl_certificate_provider` - only for Linux os. https://docs.ansible.com/ansible/latest/openssl_certificate_module.html
     default: `selfsigned`
   - `solr_ca_domain` - certificate domain name
