@@ -67,7 +67,6 @@
       Content-Type: 'application/json'
     body_format: json
     body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"} }'
-  become: True
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
@@ -88,7 +87,6 @@
       Content-Type: 'application/json'
     body_format: json
     body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"} }'
-  become: True
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
