@@ -18,14 +18,14 @@ Ansible lint:
   after_script:
     - rm -rf ~/ansible-lint-rules
   tags:
-    - delegated
+    - aws
 
 Docker Solr:
   stage: deployment test
   script:
     - molecule test -s default
   tags:
-    - docker
+    - aws
 
 EPC Solr:
   variables:

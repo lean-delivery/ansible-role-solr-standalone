@@ -52,7 +52,11 @@ SOLR_HOME={{ solr_home }}
 # Solr provides a default Log4J configuration properties file in server/resources
 # however, you may want to customize the log settings and file appender location
 # so you can point the script to use a different log4j.properties file
+{% if solr_version is version_compare('7.4.0', '<') %}
 LOG4J_PROPS={{ solr_base_path }}/log4j.properties
+{% else %}
+LOG4J_PROPS={{ solr_base_path }}/log4j2.xml
+{% endif %}
 
 # Location where Solr should write logs to; should agree with the file appender
 # settings in server/resources/log4j.properties
@@ -66,7 +70,14 @@ SOLR_PORT="{{ solr_port }}"
 # Leave empty if not using SolrCloud
 {% if zk_host is defined %}
 ZK_HOST="{{zk_host}}"
+ZK_CLIENT_TIMEOUT="{{ solr_client_timeout }}"
 {% endif %}
+
+# By default Solr will try to connect to Zookeeper with 30 seconds in timeout; override the timeout if needed
+SOLR_WAIT_FOR_ZK="{{ solr_wait_for_zk }}"
+
+# By default the start script uses UTC; override the timezone if needed
+SOLR_TIMEZONE="{{ solr_timezone }}"
 
 {% if solr_auth_configure and solr_version is version('7.0.0', '>=') %}
 SOLR_AUTH_TYPE="{{ solr_auth_type }}"
@@ -85,4 +96,5 @@ SOLR_SSL_NEED_CLIENT_AUTH="{{ solr_ssl_need_client_auth }}"
 SOLR_SSL_WANT_CLIENT_AUTH="{{ solr_ssl_want_client_auth }}"
 SOLR_SSL_KEY_STORE_TYPE="{{ solr_ssl_key_store_type }}"
 SOLR_SSL_TRUST_STORE_TYPE="{{ solr_ssl_trust_store_type }}"
+SOLR_SSL_CHECK_PEER_NAME={{ solr_ssl_check_peer_name }}
 {% endif %}

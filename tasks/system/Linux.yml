@@ -2,7 +2,9 @@
 - name: "Install requirements"
   package:
     name: "{{ requirements }}"
-    state: "present"
+    state: present
+  register: installed_packages
+  until: installed_packages is succeeded
   become: True
 
 - name: "Check that solr group is exist"
@@ -46,20 +48,20 @@
   set_fact:
     solr_service_status: "{{ solr_service_stat.stat.exists }}"
 
-- name: "Get sha1 for solr  {{ solr_version }}"
+- name: "Get {{ solr_checksum }} for solr  {{ solr_version }}"
   set_fact:
-    sha1_value: "{{ sha1_url_item }}"
-  with_url: "{{ solr_distr_url }}.sha1"
+    sha_value: "{{ sha_url_item }}"
+  with_url: "{{ solr_distr_url }}.{{ solr_checksum }}"
   when: not solr_service_status
   loop_control:
-    loop_var: sha1_url_item
+    loop_var: sha_url_item
 
 # initial deployment of solr
 - name: "Download solr {{ solr_version }} archive"
   get_url:
     url: "{{ solr_distr_url }}"
     dest: "{{ dest_solr_path }}.zip"
-    checksum: sha1:{{ sha1_value.split(" ")[0] }}
+    checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
   register: result
   until: result is succeeded
   retries: 10
@@ -79,14 +81,17 @@
 - name: "Install solr as service"
   command: /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh \
     {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
+  args:
+    removes: '{{ dest_solr_path }}/bin/install_solr_service.sh'
   become: True
   when: not solr_service_status
 
 - name: "Install pip packages"
   pip:
-    name: "{{ item }}"
+    name:
+      - pyOpenSSL
     state: present
     extra_args: --upgrade
-  with_items:
-    - pyOpenSSL
+  register: installed_packages
+  until: installed_packages is succeeded
   become: True
