@@ -77,7 +77,7 @@
 
 - name: "Change default admin user password via API"
   uri:
-    url: "{{ (solr_ssl_configure == true) | ternary('https', 'http') }}://\
+    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
       {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
     method: POST
     user: solr
