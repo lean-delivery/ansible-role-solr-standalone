@@ -52,7 +52,7 @@ SOLR_HOME={{ solr_home }}
 # Solr provides a default Log4J configuration properties file in server/resources
 # however, you may want to customize the log settings and file appender location
 # so you can point the script to use a different log4j.properties file
-{% if solr_version | version_compare('7.4.0', '<') %}
+{% if solr_version is version_compare('7.4.0', '<') %}
 LOG4J_PROPS={{ solr_base_path }}/log4j.properties
 {% else %}
 LOG4J_PROPS={{ solr_base_path }}/log4j2.xml
