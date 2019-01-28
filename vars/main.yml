@@ -1,2 +1,3 @@
 ---
 # vars file for solr-standalone
+solr_checksum: '{{ solr_version | version_compare('7.4.0', '>=') | ternary('sha512', 'sha1') }}'

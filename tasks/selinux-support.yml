@@ -2,10 +2,12 @@
 - name: "Install ansible selinux configure libraries"
   package:
     name: "{{ item }}"
-    state: present
+    state: installed
   with_items:
     - policycoreutils-python
     - libsemanage-python
+  register: installed_packages
+  until: installed_packages is succeeded
   become: True
   when: ansible_selinux.status == "enabled"
 
