@@ -78,6 +78,7 @@
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
+    - solr_change_default_password
   notify:
     - 'restart solr windows'
 
