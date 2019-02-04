@@ -157,6 +157,7 @@ Requirements
 
 Example Inventory
 ----------------
+```ini
 [solr]
 solr.example.com
 
@@ -168,6 +169,7 @@ ansible_user=admin
 ansible_password=password
 ansible_connection=winrm
 ansible_winrm_server_cert_validation=ignore
+```
 
 Example Playbook
 ----------------
