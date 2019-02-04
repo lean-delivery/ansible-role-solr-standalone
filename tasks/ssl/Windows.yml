@@ -6,7 +6,7 @@
   register: keystore_file
 
 - name: 'Check if keystore exists in solr directory'
-  stat:
+  win_stat:
     path: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   register: keystore_file_solr
 
@@ -17,13 +17,13 @@
     force: True
   when:
     - keystore_file.stat.exists
-    - not keystore_file_solr.exists
+    - not keystore_file_solr.stat.exists
 
 - name: 'Install OpenSSL'
   win_chocolatey:
     name: 'openssl.light'
     state: present
-  when: not keystore_file or not keystore_file_solr
+  when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
 
 - name: 'Create private certificate'
   win_command: >-
