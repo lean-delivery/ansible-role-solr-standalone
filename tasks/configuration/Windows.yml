@@ -24,15 +24,10 @@
     - solr_version is version('7.0.0', '>=')
   notify: 'restart solr windows'
 
-- name: 'Install packages'
+- name: 'Install nssm package'
   win_chocolatey:
-    name: '{{ win_package }}'
+    name: 'nssm'
     state: present
-  loop:
-    - curl
-    - nssm
-  loop_control:
-    loop_var: win_package
 
 - name: 'Create solr service'
   win_nssm:
