@@ -1,66 +1,64 @@
 ---
-- name: "Install requirements"
+- name: 'Install requirements'
   package:
-    name: "{{ requirements }}"
+    name: '{{ requirements }}'
     state: present
   register: installed_packages
   until: installed_packages is succeeded
   become: True
 
-- name: "Check that solr group is exist"
+- name: 'Check that solr group is exist'
   group:
-    name: "{{ solr_group }}"
+    name: '{{ solr_group }}'
     state: present
   become: True
 
-- name: "Check that solr user is exist"
+- name: 'Check that solr user is exist'
   user:
-    name: "{{ solr_user }}"
-    group: "{{ solr_group }}"
+    name: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     createhome: True
     state: present
   become: True
 
-- name: "Set open files limit"
+- name: 'Set limits'
   pam_limits:
-    domain: "{{ solr_user }}"
-    limit_item: "nofile"
-    limit_type: "-"
-    value: "{{ solr_open_files_limit }}"
+    domain: '{{ solr_user }}'
+    limit_item: '{{ solr_limit.limit_item }}'
+    limit_type: '-'
+    value: '{{ solr_limit.limit_value }}'
+  loop:
+    - limit_item: nofile
+      limit_value: '{{ solr_open_files_limit }}'
+    - limit_item: nproc
+      limit_value: '{{ solr_max_processes_limit }}'
+  loop_control:
+    loop_var: solr_limit
   when: solr_set_limits
   become: True
 
-- name: "Set max processes limit"
-  pam_limits:
-    domain: "{{ solr_user }}"
-    limit_item: "nproc"
-    limit_type: "-"
-    value: "{{ solr_max_processes_limit }}"
-  when: solr_set_limits
-  become: True
-
-- name: "Check if Solr Service Exists"
+- name: 'Check if Solr Service Exists'
   stat:
     path: /etc/init.d/solr
   register: solr_service_stat
 
-- name: "Set solr service status"
+- name: 'Set solr service status'
   set_fact:
-    solr_service_status: "{{ solr_service_stat.stat.exists }}"
+    solr_service_status: '{{ solr_service_stat.stat.exists }}'
 
-- name: "Get {{ solr_checksum }} for solr  {{ solr_version }}"
+- name: 'Get {{ solr_checksum }} for solr {{ solr_version }}'
   set_fact:
-    sha_value: "{{ sha_url_item }}"
-  with_url: "{{ solr_distr_url }}.{{ solr_checksum }}"
+    sha_value: '{{ sha_url_item }}'
+  with_url: '{{ solr_distr_url }}.{{ solr_checksum }}'
   when: not solr_service_status
   loop_control:
     loop_var: sha_url_item
 
 # initial deployment of solr
-- name: "Download solr {{ solr_version }} archive"
+- name: 'Download solr {{ solr_version }} archive'
   get_url:
-    url: "{{ solr_distr_url }}"
-    dest: "{{ dest_solr_path }}.zip"
+    url: '{{ solr_distr_url }}'
+    dest: '{{ dest_solr_path }}.zip'
     checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
   register: result
   until: result is succeeded
@@ -69,24 +67,27 @@
   become: True
   when: not solr_service_status
 
-- name: "Unarchive and install solr {{ solr_version }}"
+- name: 'Unarchive solr {{ solr_version }}'
   unarchive:
-    creates: "{{ dest_solr_path }}"
-    src: "{{ dest_solr_path }}.zip"
-    dest: "{{ dest_main_path }}"
+    creates: '{{ dest_solr_path }}'
+    src: '{{ dest_solr_path }}.zip'
+    dest: '{{ dest_main_path }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     remote_src: True
   become: True
   when: not solr_service_status
 
-- name: "Install solr as service"
-  command: /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh \
+- name: 'Install solr as service'
+  command: >-
+    /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh
     {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
   args:
     removes: '{{ dest_solr_path }}/bin/install_solr_service.sh'
   become: True
   when: not solr_service_status
 
-- name: "Install pip packages"
+- name: 'Install pip packages'
   pip:
     name:
       - pyOpenSSL

@@ -2,6 +2,7 @@ Solr installation
 =========
 [![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/lean-delivery/ansible-role-solr-standalone/master/LICENSE)
 [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-solr-standalone.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-solr-standalone)
+[![Build Status](https://gitlab.com/lean-delivery/ansible-role-solr-standalone/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-solr-standalone)
 [![Galaxy](https://img.shields.io/badge/galaxy-lean__delivery.solr__standalone-blue.svg)](https://galaxy.ansible.com/lean_delivery/solr_standalone)
 ![Ansible](https://img.shields.io/ansible/role/d/30080.svg)
 ![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F30080%2F&query=$.min_ansible_version)
@@ -9,13 +10,15 @@ Solr installation
 
 This role:
   - Installs Solr standalone on Centos 7, Ubuntu or Windows host.
-  - Configures SSL for Solr 7.0 and later
+  - Configures SSL for Solr 7.x
+  - Configures Authentication for Solr 7.x
   - Configures Solr
-  - Supported Solr versions: 6.x - 7.x. The latest tested is 7.1.0
+  - Supported Solr versions: 6.x - 7.x. The latest tested is 7.6.0
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
   - solr-slave (lean-delivery.ansible-role-solr-slave)
+  - solr-cloud (lean-delivery.ansible-role-solr-cloud)
   - to integrate SAP-Hyrbis and solr with hybris extras (lean-delivery.ansible-role-solr-hybris-config)
 
 Requirements
@@ -26,6 +29,7 @@ Requirements
     - CentOS
       - 7
     - Ubuntu
+    - Debian
     - Windows
       - "Windows Server 2008"
       - "Windows Server 2008 R2"
@@ -39,8 +43,8 @@ Requirements
 [Prepared Windows System](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html)
 
 ## Role Variables
-  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 5.3-7.1.x
-    default: `7.1.0`
+  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 5.3-7.6.x
+    default: `7.6.0`
   - `solr_url` - root url to download solr
     default: `http://archive.apache.org/dist/lucene/solr`
   - `solr_distr_url` - url to zip file
@@ -51,7 +55,7 @@ Requirements
   - `override_dest_solr_path` - solr folder path
     default: `{{ dest_main_path }}/solr-{{ solr_version }}`
     default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
-  - `solr_change_default_password` - to change default password (will be solr/SolrRocks)
+  - `solr_change_default_password` - to change password to solr default (will be solr/SolrRocks)
     default: `True`
   - `solr_auth_configure` - Enable authentication
     default: `True`
@@ -175,10 +179,6 @@ Example Playbook
     solr_change_default_password: False
   roles:
     - role: lean-delivery.java
-      java_major_version: 8
-      java_minor_version: 181
-      java_arch: "x64"
-      java_package: "jdk"
     - role: lean-delivery.solr
 ```
 

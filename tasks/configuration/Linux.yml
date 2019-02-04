@@ -1,45 +1,44 @@
 ---
-- name: "Change folder permissions"
+- name: 'Change folder permissions'
   file:
-    path: "{{ solr_base_path }}"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
+    path: '{{ solr_base_path }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     state: directory
     recurse: True
   become: True
 
-- name: "Adjusting solr java heap memory and other settings"
+- name: 'Adjusting solr java heap memory and other settings'
   template:
     src: solr.in.sh.j2
-    dest: "{{ solr_insh_default }}"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
+    dest: '{{ solr_insh_default }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     mode: 0755
   become: True
   notify:
-    - "restart solr linux"
+    - 'restart solr linux'
 
-- name: "Generate basic auth config"
+- name: 'Generate basic auth config'
   template:
     src: security.json.j2
-    dest: "{{ solr_base_path }}/data/security.json"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
+    dest: '{{ solr_base_path }}/data/security.json'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     mode: 0755
   become: True
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
   notify:
-    - "restart solr linux"
+    - 'restart solr linux'
 
-- name: "Force all notified handlers"
+- name: 'Force all notified handlers'
   meta: flush_handlers
 
-- name: "Wait for Solr is UP"
+- name: 'Wait for Solr is UP'
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr"
+    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr'
     status_code: 200
     validate_certs: False
     user: solr
@@ -54,10 +53,9 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
-- name: Create admin user via API
+- name: 'Create admin user via API'
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
     user: solr
     password: SolrRocks
@@ -72,12 +70,11 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - "restart solr linux"
+    - 'restart solr linux'
 
-- name: "Change default admin user password via API"
+- name: 'Change default admin user password via API'
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
     user: solr
     password: SolrRocks
@@ -92,4 +89,4 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - "restart solr linux"
+    - 'restart solr linux'

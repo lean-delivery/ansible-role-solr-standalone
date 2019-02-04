@@ -1,3 +1,4 @@
 ---
 # vars file for solr-standalone
-solr_checksum: "{{ solr_version is version('7.4.0', '>=') | ternary('sha512', 'sha1') }}"
+solr_checksum: '{{ solr_version is version("7.4.0", ">=") | ternary("sha512", "sha1") }}'
+solr_proto: '{{ solr_ssl_configure | ternary("https", "http") }}'

@@ -1,14 +1,14 @@
 ---
-- name: "restart solr linux"
+- name: 'restart solr linux'
   systemd:
-    name: "{{ solr_service_name }}"
+    name: '{{ solr_service_name }}'
     state: restarted
     daemon_reload: True
     enabled: True
   when: solr_with_systemd
   become: True
 
-- name: "restart solr windows"
+- name: 'restart solr windows'
   win_service:
-    name: "{{ solr_service_name }}"
+    name: '{{ solr_service_name }}'
     state: restarted

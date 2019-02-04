@@ -8,28 +8,29 @@ driver:
 lint:
   name: yamllint
   options:
-    config-file: molecule/yamllint.yml
+    config-file: .yamllint
 platforms:
   - name: test-epc-centos7-solr-standalone
     image: CentOS7_64-bit
-    shape: medium
+    shape: small
     region: EPAM-BY2
-    wait_timeout: 1800
+    wait_timeout: 3600
     groups:
       - rhel_family
   - name: test-epc-ubuntu1804-solr-standalone
     image: Ubuntu18.04_64-bit
-    shape: medium
+    shape: small
     region: EPAM-BY2
-    wait_timeout: 1800
+    wait_timeout: 3600
     groups:
       - debian_family
 provisioner:
   name: ansible
+  log: True
   playbooks:
-    create: ../resources/provisioning/create.yml
-    prepare: ../resources/provisioning/prepare.yml
-    destroy: ../resources/provisioning/destroy.yml
+    create: ../resources/provisioning/EPC/create.yml
+    prepare: ../resources/provisioning/EPC/prepare.yml
+    destroy: ../resources/provisioning/EPC/destroy.yml
   config_options:
     ssh_connection:
       control_path: "/var/ans/%%h"
