@@ -7,7 +7,7 @@
 
 - name: 'Check if keystore exists in solr directory'
   stat:
-    path: '{{ solr_ssl_key_store }}\{{ solr_ssl_key_store_name }}'
+    path: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   register: keystore_file_solr
 
 - name: 'Copy keystore file'
@@ -23,6 +23,7 @@
   win_chocolatey:
     name: 'openssl.light'
     state: present
+  when: not keystore_file or not keystore_file_solr
 
 - name: 'Create private certificate'
   win_command: >-
