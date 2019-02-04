@@ -54,8 +54,8 @@ Requirements
     default: `C:\Solr`
   - `override_dest_solr_path` - solr folder path
     default: `{{ dest_main_path }}/solr-{{ solr_version }}`
-    default: `{{ dest_main_path }}\\solr-{{ solr_version }}`
-  - `solr_change_default_password` - to change password to solr default (will be solr/SolrRocks)
+    default: `{{ dest_main_path }}\solr-{{ solr_version }}`
+  - `solr_change_default_password` - to change default password to solr user (will be solr_auth_pass)
     default: `True`
   - `solr_auth_configure` - Enable authentication
     default: `True`
@@ -106,17 +106,17 @@ Requirements
     default: 4096
   - `override_solr_ssl_key_store_path` - directory to store keystore
     default: `{{ dest_solr_path }}/server/solr`
-    default: `{{ dest_solr_path }}\\server\\solr`
+    default: `{{ dest_solr_path }}\server\solr`
   - `solr_ssl_key_store_name` - keystore name. If file with such name exists in role folder/files - it will be used as keystore.
     default: `solr-ssl.keystore.jks`
   - `override_solr_ssl_key_store` - path to solr keystore.
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
-    default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
+    default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_key_store_password` - keystore password
     default: `123456`
   - `override_solr_ssl_trust_store` - path to trust keystore
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`
-    default: `{{ solr_ssl_key_store_path }}\\{{ solr_ssl_key_store_name }}`
+    default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_trust_store_password` - trusted keystore password
     default: `123456`
   - `solr_ssl_need_client_auth` - Client Authentication Settings
