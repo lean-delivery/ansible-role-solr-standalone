@@ -48,39 +48,39 @@
   changed_when: False
   when: not keystore_file.stat.exists
 
-- name: 'Read private key'
-  slurp:
-    src: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
-  register: solr_pr_key
-  when:
-    - not keystore_file.stat.exists
-    - ansible_version.full is version('2.7', '>=')
-
-- name: 'Read public key'
-  slurp:
-    src: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
-  register: solr_pub_key
-  when:
-    - not keystore_file.stat.exists
-    - ansible_version.full is version('2.7', '>=')
-
-- name: 'Create keystore'
-  java_keystore:
-    name: '{{ solr_ca_domain }}'
-    certificate: '{{ solr_pub_key["content"] | b64decode }}'
-    private_key: '{{ solr_pr_key["content"] | b64decode }}'
-    password: '{{ solr_ssl_key_store_password }}'
-    dest: '{{ solr_ssl_key_store }}'
-    owner: '{{ solr_user }}'
-    group: '{{ solr_group }}'
-    mode: 0644
-    force: True
-  become: True
-  become_flags: '-i'
-  become_method: sudo
-  when:
-    - not keystore_file.stat.exists
-    - ansible_version.full is version('2.7', '>=')
+# - name: 'Read private key'
+#   slurp:
+#     src: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
+#   register: solr_pr_key
+#   when:
+#     - not keystore_file.stat.exists
+#     - ansible_version.full is version('2.7', '>=')
+#
+# - name: 'Read public key'
+#   slurp:
+#     src: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
+#   register: solr_pub_key
+#   when:
+#     - not keystore_file.stat.exists
+#     - ansible_version.full is version('2.7', '>=')
+#
+# - name: 'Create keystore'
+#   java_keystore:
+#     name: '{{ solr_ca_domain }}'
+#     certificate: '{{ solr_pub_key["content"] | b64decode }}'
+#     private_key: '{{ solr_pr_key["content"] | b64decode }}'
+#     password: '{{ solr_ssl_key_store_password }}'
+#     dest: '{{ solr_ssl_key_store }}'
+#     owner: '{{ solr_user }}'
+#     group: '{{ solr_group }}'
+#     mode: 0644
+#     force: True
+#   become: True
+#   become_flags: '-i'
+#   become_method: sudo
+#   when:
+#     - not keystore_file.stat.exists
+#     - ansible_version.full is version('2.7', '>=')
 
 - name: 'Export certificate and private key into a bundle'
   command: >-
