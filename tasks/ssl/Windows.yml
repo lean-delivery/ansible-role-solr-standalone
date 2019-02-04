@@ -5,12 +5,19 @@
   delegate_to: localhost
   register: keystore_file
 
+- name: 'Check if keystore exists in solr directory'
+  stat:
+    path: '{{ solr_ssl_key_store }}\{{ solr_ssl_key_store_name }}'
+  register: keystore_file_solr
+
 - name: 'Copy keystore file'
   win_copy:
     src: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
     dest: '{{ solr_ssl_key_store }}'
     force: True
-  when: keystore_file.stat.exists
+  when:
+    - keystore_file.stat.exists
+    - not keystore_file_solr.exists
 
 - name: 'Install OpenSSL'
   win_chocolatey:
@@ -21,6 +28,8 @@
   win_command: >-
     openssl genrsa -out {{ solr_win_temp_dir }}\{{ solr_local_pkey_file_name }}
     {{ solr_ssl_key_size | int }}
+  args:
+    creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
 - name: 'Create CSR'
@@ -29,6 +38,8 @@
     -keyout {{ solr_win_temp_dir }}\{{ solr_local_pkey_file_name }}
     -out {{ solr_win_temp_dir }}\{{ solr_local_cert_file_name }}.csr
     -subj {{ solr_win_ssl_subj }}
+  args:
+    creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
 - name: 'Create certificates for keystore'
@@ -37,6 +48,8 @@
     -in {{ solr_win_temp_dir }}\{{ solr_local_cert_file_name }}.csr
     -signkey {{ solr_win_temp_dir }}\{{ solr_local_pkey_file_name }}
     -out {{ solr_win_temp_dir }}\{{ solr_local_cert_file_name }}
+  args:
+    creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
 - name: 'Export certificate and private key into a bundle'
@@ -49,13 +62,15 @@
     -out {{ solr_win_temp_dir }}\{{ ansible_hostname  }}.p12
   args:
     chdir: '{{ solr_win_temp_dir }}'
-    creates: '{{ solr_win_temp_dir }}\{{ ansible_hostname  }}.p12'
+    creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when:
     - not keystore_file.stat.exists
 
 - name: 'Get java directory'
   win_shell: '(Get-ChildItem Env:JAVA_HOME | \
     Select-Object Value | ft -HideTableHeaders | Out-String).Trim()'
+  args:
+    creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   register: java_directory
   when:
     - not keystore_file.stat.exists

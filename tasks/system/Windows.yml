@@ -3,6 +3,7 @@
   win_command: 'sc query {{ solr_service_name }}'
   register: solr_service_stat
   ignore_errors: True
+  changed_when: False
 
 - name: 'Set solr service status'
   set_fact:

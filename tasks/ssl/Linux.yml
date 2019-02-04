@@ -19,10 +19,7 @@
   openssl_privatekey:
     path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
     size: '{{ solr_ssl_key_size | int }}'
-    #force: True
   become: True
-  # https://github.com/ansible/ansible/issues/45724
-  #changed_when: False
   when: not keystore_file.stat.exists
 
 - name: 'Create CSR'
@@ -30,10 +27,7 @@
     path: '/tmp/{{ solr_local_cert_file_name }}.csr'
     privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
     common_name: '{{ solr_ca_domain }}'
-    #force: True
   become: True
-  # https://github.com/ansible/ansible/issues/45726
-  #changed_when: False
   when: not keystore_file.stat.exists
 
 - name: 'Create certificates for keystore'
@@ -44,7 +38,6 @@
     provider: '{{ solr_ssl_certificate_provider }}'
     force: True
   become: True
-  # https://github.com/ansible/ansible/issues/45725
   changed_when: False
   when: not keystore_file.stat.exists
 

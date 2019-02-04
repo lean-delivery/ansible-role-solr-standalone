@@ -41,6 +41,7 @@
     app_parameters_free_form: 'start -f'
     state: started
     start_mode: auto
+  when: not solr_service_status
   notify: 'restart solr windows'
 
 - name: 'Force all notified handlers'
@@ -62,9 +63,6 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
-# There is a bug with certificate validation for "win_uri" module (validation can't be switched off)
-# https://github.com/ansible/ansible/issues/36760
-# Needs to be checked on ansible 2.7.0
 - name: 'Create new admin user via API'
   win_uri:
     url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
@@ -98,32 +96,6 @@
     - solr_change_default_password
   notify:
     - 'restart solr windows'
-
-# - name: 'Create new admin user via API'
-#   win_command: >-
-#     curl --user 'solr:SolrRocks' -k
-#     "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
-#     -H "Content-type:application/json"
-#     -d "{'set-user': {'{{ solr_auth_user }}' : '{{ solr_auth_pass }}'} }"
-#   when:
-#     - solr_auth_configure
-#     - solr_version is version('7.0.0', '>=')
-#     - solr_change_default_password
-#   notify:
-#     - 'restart solr windows'
-#
-# - name: 'Change default admin user password via API'
-#   win_command: >-
-#     curl --user 'solr:SolrRocks' -k
-#     "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
-#     -H "Content-type:application/json"
-#     -d "{'set-user': {'solr' : '{{ solr_auth_pass }}'} }"
-#   when:
-#     - solr_auth_configure
-#     - solr_version is version('7.0.0', '>=')
-#     - solr_change_default_password
-#   notify:
-#     - 'restart solr windows'
 
 - name: 'Force all notified handlers'
   meta: flush_handlers
