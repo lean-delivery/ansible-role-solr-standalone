@@ -12,7 +12,7 @@ lint:
 platforms:
 
   - name: test-aws-Windows2016-solr-standalone
-    aws_image_id: ami-0f4c7e570f044b46f
+    aws_image_id: ami-07a29e78aeb420471
     aws_region: us-east-1
     instance_type: m5.large
     vpc_subnet_id: subnet-05a2ef2b767afec50
