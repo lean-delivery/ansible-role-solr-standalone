@@ -1,5 +1,5 @@
 ---
-- name: 'Create solr directories'
+- name: Create solr directories
   win_file:
     path: '{{ solr_win_dir_item }}'
     state: directory
@@ -9,27 +9,27 @@
   loop_control:
     loop_var: solr_win_dir_item
 
-- name: 'Set solr configuration file'
+- name: Set solr configuration file
   win_template:
     src: solr.in.cmd.j2
     dest: '{{ dest_solr_path }}\bin\solr.in.cmd'
-  notify: 'restart solr windows'
+  notify: restart solr windows
 
-- name: 'Generate basic auth config'
+- name: Generate basic auth config
   win_template:
     src: security.json.j2
     dest: '{{ dest_solr_path }}\server\solr\security.json'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-  notify: 'restart solr windows'
+  notify: restart solr windows
 
-- name: 'Install nssm package'
+- name: Install nssm package
   win_chocolatey:
-    name: 'nssm'
+    name: nssm
     state: present
 
-- name: 'Create solr service'
+- name: Create solr service
   win_nssm:
     name: '{{ solr_service_name }}'
     application: '{{ dest_solr_path }}\bin\solr.cmd'
@@ -37,12 +37,12 @@
     state: started
     start_mode: auto
   when: not solr_service_status
-  notify: 'restart solr windows'
+  notify: restart solr windows
 
-- name: 'Force all notified handlers'
+- name: Force all notified handlers
   meta: flush_handlers
 
-- name: 'Wait for Solr is UP'
+- name: Wait for Solr is UP
   win_get_url:
     url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/'
     dest: '{{ solr_win_temp_dir }}\test.html'
@@ -58,7 +58,7 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
-- name: 'Create new admin user via API'
+- name: Create new admin user via API
   win_uri:
     url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
@@ -73,9 +73,9 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - 'restart solr windows'
+    - restart solr windows
 
-- name: 'Change default admin user password via API'
+- name: Change default admin user password via API
   win_uri:
     url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
@@ -90,7 +90,7 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - 'restart solr windows'
+    - restart solr windows
 
-- name: 'Force all notified handlers'
+- name: Force all notified handlers
   meta: flush_handlers

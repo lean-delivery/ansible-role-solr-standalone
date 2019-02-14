@@ -1,8 +1,8 @@
 ---
-- name: 'Load a variables'
+- name: Load a variables
   include_vars: '{{ ansible_os_family }}.yml'
 
-- name: 'Choose platform based task'
+- name: Choose platform based task
   include_tasks: '{{ platform }}'
   with_first_found:
     - 'system/{{ ansible_os_family }}.yml'
@@ -10,7 +10,7 @@
   loop_control:
     loop_var: platform
 
-- name: 'SSL preparation'
+- name: SSL preparation
   include_tasks: '{{ platform }}'
   with_first_found:
     - 'ssl/{{ ansible_os_family }}.yml'
@@ -20,7 +20,7 @@
   when:
     - solr_ssl_configure
 
-- name: 'Solr configuration'
+- name: Solr configuration
   include_tasks: '{{ platform }}'
   with_first_found:
     - 'configuration/{{ ansible_os_family }}.yml'

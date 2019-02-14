@@ -1,11 +1,11 @@
 ---
-- name: 'Check if keystore exists in role'
+- name: Check if keystore exists in role
   stat:
     path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
   delegate_to: localhost
   register: keystore_file
 
-- name: 'Copy keystore file'
+- name: Copy keystore file
   copy:
     src: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
     dest: '{{ solr_ssl_key_store }}'
@@ -15,14 +15,14 @@
   become: True
   when: keystore_file.stat.exists
 
-- name: 'Create private certificate'
+- name: Create private certificate
   openssl_privatekey:
     path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
     size: '{{ solr_ssl_key_size | int }}'
   become: True
   when: not keystore_file.stat.exists
 
-- name: 'Create CSR'
+- name: Create CSR
   openssl_csr:
     path: '/tmp/{{ solr_local_cert_file_name }}.csr'
     privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
@@ -30,7 +30,7 @@
   become: True
   when: not keystore_file.stat.exists
 
-- name: 'Create certificates for keystore'
+- name: Create certificates for keystore
   openssl_certificate:
     csr_path: '/tmp/{{ solr_local_cert_file_name }}.csr'
     path: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
@@ -41,7 +41,7 @@
   changed_when: False
   when: not keystore_file.stat.exists
 
-# - name: 'Read private key'
+# - name: Read private key
 #   slurp:
 #     src: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
 #   register: solr_pr_key
@@ -49,7 +49,7 @@
 #     - not keystore_file.stat.exists
 #     - ansible_version.full is version('2.7', '>=')
 #
-# - name: 'Read public key'
+# - name: Read public key
 #   slurp:
 #     src: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
 #   register: solr_pub_key
@@ -57,7 +57,7 @@
 #     - not keystore_file.stat.exists
 #     - ansible_version.full is version('2.7', '>=')
 #
-# - name: 'Create keystore'
+# - name: Create keystore
 #   java_keystore:
 #     name: '{{ solr_ca_domain }}'
 #     certificate: '{{ solr_pub_key["content"] | b64decode }}'
@@ -75,7 +75,7 @@
 #     - not keystore_file.stat.exists
 #     - ansible_version.full is version('2.7', '>=')
 
-- name: 'Export certificate and private key into a bundle'
+- name: Export certificate and private key into a bundle
   command: >-
     openssl pkcs12 -export
     -in '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
@@ -93,7 +93,7 @@
     - not keystore_file.stat.exists
     - ansible_version.full is version('2.7', '<')
 
-- name: 'Import the PKCS12 file into a new java keystore'
+- name: Import the PKCS12 file into a new java keystore
   command: >-
     keytool
     -importkeystore

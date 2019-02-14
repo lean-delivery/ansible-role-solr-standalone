@@ -1,5 +1,5 @@
 ---
-- name: 'Install ansible selinux configure libraries'
+- name: Install ansible selinux configure libraries
   package:
     name:
       - policycoreutils-python
@@ -10,7 +10,7 @@
   become: True
   when: ansible_selinux.status == 'enabled'
 
-- name: 'Enable connections to HTTP port'
+- name: Enable connections to HTTP port
   seport:
     ports: '{{ solr_port }}'
     proto: tcp

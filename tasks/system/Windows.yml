@@ -1,11 +1,11 @@
 ---
-- name: 'Check if Solr Service Exists'
+- name: Check if Solr Service Exists
   win_command: 'sc query {{ solr_service_name }}'
   register: solr_service_stat
   ignore_errors: True
   changed_when: False
 
-- name: 'Set solr service status'
+- name: Set solr service status
   set_fact:
     solr_service_status: '{{ solr_service_stat.rc == 0 }}'
 
@@ -23,7 +23,7 @@
     creates: '{{ dest_solr_path }}'
   when: not solr_service_status
 
-- name: 'Set solr firewall rule'
+- name: Set solr firewall rule
   win_firewall_rule:
     name: '{{ solr_service_name }}'
     localport: '{{ solr_port }}'

@@ -1,5 +1,5 @@
 ---
-- name: 'Install requirements'
+- name: Install requirements
   package:
     name: '{{ requirements }}'
     state: present
@@ -7,13 +7,13 @@
   until: installed_packages is succeeded
   become: True
 
-- name: 'Check that solr group is exist'
+- name: Check that solr group is exist
   group:
     name: '{{ solr_group }}'
     state: present
   become: True
 
-- name: 'Check that solr user is exist'
+- name: Check that solr user is exist
   user:
     name: '{{ solr_user }}'
     group: '{{ solr_group }}'
@@ -21,7 +21,7 @@
     state: present
   become: True
 
-- name: 'Set limits'
+- name: Set limits
   pam_limits:
     domain: '{{ solr_user }}'
     limit_item: '{{ solr_limit.limit_item }}'
@@ -37,12 +37,12 @@
   when: solr_set_limits
   become: True
 
-- name: 'Check if Solr Service Exists'
+- name: Check if Solr Service Exists
   stat:
     path: /etc/init.d/solr
   register: solr_service_stat
 
-- name: 'Set solr service status'
+- name: Set solr service status
   set_fact:
     solr_service_status: '{{ solr_service_stat.stat.exists }}'
 
@@ -78,7 +78,7 @@
   become: True
   when: not solr_service_status
 
-- name: 'Install solr as service'
+- name: Install solr as service
   command: >-
     /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh
     {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
@@ -87,7 +87,7 @@
   become: True
   when: not solr_service_status
 
-- name: 'Install pip packages'
+- name: Install pip packages
   pip:
     name:
       - pyOpenSSL

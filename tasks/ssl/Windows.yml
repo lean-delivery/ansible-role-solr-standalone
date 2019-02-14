@@ -1,16 +1,16 @@
 ---
-- name: 'Check if keystore exists in role'
+- name: Check if keystore exists in role
   stat:
     path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
   delegate_to: localhost
   register: keystore_file
 
-- name: 'Check if keystore exists in solr directory'
+- name: Check if keystore exists in solr directory
   win_stat:
     path: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   register: keystore_file_solr
 
-- name: 'Copy keystore file'
+- name: Copy keystore file
   win_copy:
     src: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
     dest: '{{ solr_ssl_key_store }}'
@@ -19,13 +19,13 @@
     - keystore_file.stat.exists
     - not keystore_file_solr.stat.exists
 
-- name: 'Install OpenSSL'
+- name: Install OpenSSL
   win_chocolatey:
-    name: 'openssl.light'
+    name: openssl.light
     state: present
   when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
 
-- name: 'Create private certificate'
+- name: Create private certificate
   win_command: >-
     openssl genrsa -out {{ solr_win_temp_dir }}\{{ solr_local_pkey_file_name }}
     {{ solr_ssl_key_size | int }}
@@ -33,7 +33,7 @@
     creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
-- name: 'Create CSR'
+- name: Create CSR
   win_command: >-
     openssl req -nodes -newkey rsa:{{ solr_ssl_key_size | int }}
     -keyout {{ solr_win_temp_dir }}\{{ solr_local_pkey_file_name }}
@@ -43,7 +43,7 @@
     creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
-- name: 'Create certificates for keystore'
+- name: Create certificates for keystore
   win_command: >-
     openssl x509 -req -days 365
     -in {{ solr_win_temp_dir }}\{{ solr_local_cert_file_name }}.csr
@@ -53,7 +53,7 @@
     creates: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
   when: not keystore_file.stat.exists
 
-- name: 'Export certificate and private key into a bundle'
+- name: Export certificate and private key into a bundle
   win_command: >-
     openssl pkcs12 -export
     -in {{ solr_win_temp_dir }}\{{ solr_local_cert_file_name }}
@@ -67,7 +67,7 @@
   when:
     - not keystore_file.stat.exists
 
-- name: 'Get java directory'
+- name: Get java directory
   win_shell: '(Get-ChildItem Env:JAVA_HOME | \
     Select-Object Value | ft -HideTableHeaders | Out-String).Trim()'
   args:
@@ -76,7 +76,7 @@
   when:
     - not keystore_file.stat.exists
 
-- name: 'Import the PKCS12 file into a new java keystore'
+- name: Import the PKCS12 file into a new java keystore
   win_command: >-
     keytool
     -importkeystore
