@@ -3,7 +3,7 @@
   win_file:
     path: '{{ solr_win_dir_item }}'
     state: directory
-  with_items:
+  loop:
     - '{{ dest_solr_path }}\data'
     - '{{ dest_solr_path }}\logs'
   loop_control:
