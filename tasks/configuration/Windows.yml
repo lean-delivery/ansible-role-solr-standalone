@@ -44,7 +44,7 @@
 
 - name: Wait for Solr is UP
   win_get_url:
-    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/'
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
     dest: '{{ solr_win_temp_dir }}\test.html'
     validate_certs: False
     url_username: solr
@@ -60,7 +60,7 @@
 
 - name: Create new admin user via API
   win_uri:
-    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
     user: solr
     password: SolrRocks
@@ -77,7 +77,7 @@
 
 - name: Change default admin user password via API
   win_uri:
-    url: '{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication'
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
     user: solr
     password: SolrRocks

@@ -49,6 +49,8 @@ Requirements
     default: `http://archive.apache.org/dist/lucene/solr`
   - `solr_distr_url` - url to zip file
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
+  - `solr_host` - solr server name
+    default: `{{ ansible_fqdn }}`
   - `override_dest_main_path` - root directory to store solr folder
     default: `/opt`
     default: `C:\Solr`

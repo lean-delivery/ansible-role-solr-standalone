@@ -7,6 +7,8 @@ solr_version: 7.6.0
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: '{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip'
 
+solr_host: '{{ ansible_fqdn }}'
+
 solr_change_default_password: True
 solr_auth_configure: True
 solr_auth_type: basic
