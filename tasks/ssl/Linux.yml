@@ -1,13 +1,13 @@
 ---
 - name: Check if keystore exists in role
   stat:
-    path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
+    path: '{{ solr_local_keystore }}'
   delegate_to: localhost
   register: keystore_file
 
 - name: Copy keystore file
   copy:
-    src: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
+    src: '{{ solr_local_keystore }}'
     dest: '{{ solr_ssl_key_store }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
