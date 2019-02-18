@@ -41,8 +41,8 @@
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr'
     status_code: 200
     validate_certs: False
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     force_basic_auth: True
   register: solr_main_page
   until: solr_main_page.status == 200
@@ -57,8 +57,8 @@
   uri:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     force_basic_auth: True
     headers:
@@ -76,8 +76,8 @@
   uri:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     force_basic_auth: True
     headers:

@@ -14,6 +14,8 @@ solr_auth_configure: True
 solr_auth_type: basic
 solr_auth_user: solrserver
 solr_auth_pass: server123
+solr_default_auth_user: solrserver
+solr_default_auth_pass: server123
 solr_authentication_opts: '-Dbasicauth={{ solr_auth_user }}:{{ solr_auth_pass }}'
 
 solr_insh_default: /etc/default/solr.in.sh
