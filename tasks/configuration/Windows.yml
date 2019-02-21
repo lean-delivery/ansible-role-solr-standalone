@@ -42,13 +42,29 @@
 - name: Force all notified handlers
   meta: flush_handlers
 
+# - name: Wait for Solr is UP
+#   win_get_url:
+#     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
+#     dest: '{{ solr_win_temp_dir }}\test.html'
+#     validate_certs: False
+#     url_username: '{{ solr_default_auth_user }}'
+#     url_password: '{{ solr_default_auth_pass }}'
+#   register: solr_main_page
+#   until: solr_main_page.status_code == 200
+#   retries: 20
+#   delay: 10
+#   when:
+#     - solr_auth_configure
+#     - solr_version is version('7.0.0', '>=')
+#     - solr_change_default_password
+
 - name: Wait for Solr is UP
-  win_get_url:
+  win_uri:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
-    dest: '{{ solr_win_temp_dir }}\test.html'
+    method: GET
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     validate_certs: False
-    url_username: '{{ solr_default_auth_user }}'
-    url_password: '{{ solr_default_auth_pass }}'
   register: solr_main_page
   until: solr_main_page.status_code == 200
   retries: 20
@@ -60,14 +76,14 @@
 
 - name: Create new admin user via API
   win_uri:
-    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication/'
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     headers:
       Content-type: 'application/json'
-    body: "{'set-user': {'{{ solr_auth_user }}' : '{{ solr_auth_pass }}'} }"
+    body: "{'set-user': {'{{ solr_auth_user }}': '{{ solr_auth_pass }}'} }"
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
@@ -77,14 +93,14 @@
 
 - name: Change default admin user password via API
   win_uri:
-    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication/'
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     headers:
       Content-type: 'application/json'
-    body: "{'set-user': {'solr' : '{{ solr_auth_pass }}'} }"
+    body: "{'set-user': {'solr': '{{ solr_auth_pass }}'} }"
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')

@@ -64,7 +64,7 @@
     headers:
       Content-Type: 'application/json'
     body_format: json
-    body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"} }'
+    body: '{"set-user": {"{{ solr_auth_user }}": "{{ solr_auth_pass }}"} }'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
@@ -83,7 +83,7 @@
     headers:
       Content-Type: 'application/json'
     body_format: json
-    body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"} }'
+    body: '{"set-user": {"solr": "{{ solr_auth_pass }}"} }'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
