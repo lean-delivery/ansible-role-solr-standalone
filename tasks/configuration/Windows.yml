@@ -42,6 +42,15 @@
 - name: Force all notified handlers
   meta: flush_handlers
 
+- name: TEMP Get solr service status
+  win_command: 'sc query {{ solr_service_name }}'
+  register: temp_solr_service_stat
+  changed_when: False
+
+- name: TEMP Show service status
+  debug:
+    var: temp_solr_service_stat
+
 - name: Wait for Solr is UP
   win_get_url:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
