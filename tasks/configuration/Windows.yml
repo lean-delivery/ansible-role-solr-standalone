@@ -39,8 +39,8 @@
   # when: not solr_service_status
   notify: restart solr windows
 
-# - name: Force all notified handlers
-#   meta: flush_handlers
+- name: Force all notified handlers
+  meta: flush_handlers
 
 - name: Wait for Solr is UP
   win_get_url:
