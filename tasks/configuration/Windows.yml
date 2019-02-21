@@ -66,13 +66,17 @@
     password: '{{ solr_default_auth_pass }}'
     validate_certs: False
   register: solr_main_page
-  until: solr_main_page.status_code == 200
-  retries: 20
-  delay: 10
-  when:
-    - solr_auth_configure
-    - solr_version is version('7.0.0', '>=')
-    - solr_change_default_password
+  # until: solr_main_page.status_code == 200
+  # retries: 20
+  # delay: 10
+  # when:
+  #   - solr_auth_configure
+  #   - solr_version is version('7.0.0', '>=')
+  #   - solr_change_default_password
+
+- name: debug
+  debug:
+    var: solr_main_page
 
 - name: Create new admin user via API
   win_uri:
