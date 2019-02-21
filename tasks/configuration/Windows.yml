@@ -51,6 +51,19 @@
   debug:
     var: temp_solr_service_stat
 
+- name: TEMP Wait for Solr is UP
+  win_get_url:
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
+    dest: '{{ solr_win_temp_dir }}\test.html'
+    validate_certs: False
+    url_username: '{{ solr_default_auth_user }}'
+    url_password: '{{ solr_default_auth_pass }}'
+  register: temp_solr_main_page
+
+- name: TEMP Show solr up
+  debug:
+    var: temp_solr_main_page
+
 - name: Wait for Solr is UP
   win_get_url:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
