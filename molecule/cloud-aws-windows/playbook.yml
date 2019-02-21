@@ -9,3 +9,5 @@
     - role: ansible-role-solr-standalone
   vars:
     solr_change_default_password: True
+    solr_ca_domain: localhost
+    solr_host: localhost
