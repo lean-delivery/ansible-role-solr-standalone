@@ -7,3 +7,5 @@
   vars:
     solr_change_default_password: True
     solr_auth_configure: True
+    solr_ca_domain: localhost
+    solr_host: localhost
