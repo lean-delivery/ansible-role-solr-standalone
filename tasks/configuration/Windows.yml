@@ -64,7 +64,7 @@
     method: GET
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    validate_certs: no
+    validate_certs: False
   register: solr_main_page
   # until: solr_main_page.status_code == 200
   # retries: 20
