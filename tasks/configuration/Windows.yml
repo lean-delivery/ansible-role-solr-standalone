@@ -42,41 +42,21 @@
 - name: Force all notified handlers
   meta: flush_handlers
 
-# - name: Wait for Solr is UP
-#   win_get_url:
-#     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
-#     dest: '{{ solr_win_temp_dir }}\test.html'
-#     validate_certs: False
-#     url_username: '{{ solr_default_auth_user }}'
-#     url_password: '{{ solr_default_auth_pass }}'
-#   register: solr_main_page
-#   until: solr_main_page.status_code == 200
-#   retries: 20
-#   delay: 10
-#   when:
-#     - solr_auth_configure
-#     - solr_version is version('7.0.0', '>=')
-#     - solr_change_default_password
-
 - name: Wait for Solr is UP
-  win_uri:
+  win_get_url:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
-    method: GET
-    user: '{{ solr_default_auth_user }}'
-    password: '{{ solr_default_auth_pass }}'
+    dest: '{{ solr_win_temp_dir }}\test.html'
     validate_certs: False
+    url_username: '{{ solr_default_auth_user }}'
+    url_password: '{{ solr_default_auth_pass }}'
   register: solr_main_page
-  # until: solr_main_page.status_code == 200
-  # retries: 20
-  # delay: 10
-  # when:
-  #   - solr_auth_configure
-  #   - solr_version is version('7.0.0', '>=')
-  #   - solr_change_default_password
-
-- name: debug
-  debug:
-    var: solr_main_page
+  until: solr_main_page.status_code == 200
+  retries: 20
+  delay: 10
+  when:
+    - solr_auth_configure
+    - solr_version is version('7.0.0', '>=')
+    - solr_change_default_password
 
 - name: Create new admin user via API
   win_uri:
@@ -92,8 +72,6 @@
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
-  notify:
-    - restart solr windows
 
 - name: Change default admin user password via API
   win_uri:
@@ -109,8 +87,3 @@
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
-  notify:
-    - restart solr windows
-
-- name: Force all notified handlers
-  meta: flush_handlers
