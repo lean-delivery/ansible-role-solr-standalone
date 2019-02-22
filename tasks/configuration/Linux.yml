@@ -1,7 +1,7 @@
 ---
 - name: Change folder permissions
   file:
-    path: '{{ solr_base_path }}'
+    path: '{{ solr_base_path }}/data'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
     state: directory
