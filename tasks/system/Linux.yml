@@ -37,20 +37,20 @@
   when: solr_set_limits
   become: True
 
-- name: Check if Solr Service Exists
-  stat:
-    path: /etc/init.d/solr
-  register: solr_service_stat
+# - name: Check if Solr Service Exists
+#   stat:
+#     path: /etc/init.d/solr
+#   register: solr_service_stat
 
-- name: Set solr service status
-  set_fact:
-    solr_service_status: '{{ solr_service_stat.stat.exists }}'
+# - name: Set solr service status
+#   set_fact:
+#     solr_service_status: '{{ solr_service_stat.stat.exists }}'
 
 - name: 'Get {{ solr_checksum }} for solr {{ solr_version }}'
   set_fact:
     sha_value: '{{ sha_url_item }}'
   with_url: '{{ solr_distr_url }}.{{ solr_checksum }}'
-  when: not solr_service_status
+  # when: not solr_service_status
   loop_control:
     loop_var: sha_url_item
 
@@ -65,7 +65,7 @@
   retries: 10
   delay: 2
   become: True
-  when: not solr_service_status
+  # when: not solr_service_status
 
 - name: 'Unarchive solr {{ solr_version }}'
   unarchive:
@@ -76,16 +76,24 @@
     group: '{{ solr_group }}'
     remote_src: True
   become: True
-  when: not solr_service_status
+  # when: not solr_service_status
 
-- name: Install solr as service
-  command: >-
-    /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh
-    {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
-  args:
-    removes: '{{ dest_solr_path }}/bin/install_solr_service.sh'
+# - name: Install solr as service
+#   command: >-
+#     /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh
+#     {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
+#   args:
+#     removes: '{{ dest_solr_path }}/bin/install_solr_service.sh'
+#   become: True
+#   # when: not solr_service_status
+
+- name: Install solr service
+  template:
+    src: solr.service.j2
+    dest: '/lib/systemd/system/{{ solr_service_name }}.service'
   become: True
-  when: not solr_service_status
+  notify:
+    - restart solr linux
 
 - name: Install pip packages
   pip:

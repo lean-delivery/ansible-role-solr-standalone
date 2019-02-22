@@ -38,6 +38,7 @@
     start_mode: auto
   # when: not solr_service_status
   notify: restart solr windows
+  # dirty hack - to remove
   change_when: False
 
 - name: Force all notified handlers

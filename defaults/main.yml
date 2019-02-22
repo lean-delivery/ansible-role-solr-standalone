@@ -35,6 +35,8 @@ solr_wait_for_zk: 30
 solr_client_timeout: 15000
 solr_timezone: UTC
 
+solr_service_restart: always
+
 # SSL
 solr_local_keystore: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
 solr_ssl_configure: True

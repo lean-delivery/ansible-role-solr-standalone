@@ -105,6 +105,9 @@ Requirements
     default: `15000`
   - `solr_timezone` - timezone for solr server  
     default: `UTC`
+
+  - `solr_service_restart` - solr service restart option  
+    default: `always`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
   - `solr_local_keystore` - path to local keystore file (in order not to create self-signed)  
     default: `{{ role_path }}/files/{{ solr_ssl_key_store_name }}`

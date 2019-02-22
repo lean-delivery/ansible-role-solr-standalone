@@ -1,0 +1,16 @@
+[Unit]
+Description=Solr service
+
+[Service]
+Type=simple
+User={{ solr_user }}
+Group={{ solr_group }}
+WorkingDirectory={{ dest_solr_path }}/bin
+ExecStart=/bin/bash -c 'SOLR_INCLUDE={{ solr_insh_default }} ./solr start'
+ExecStop=/bin/bash -c 'SOLR_INCLUDE={{ solr_insh_default }} ./solr stop'
+
+TimeoutSec=300
+Restart={{ solr_service_restart }}
+
+[Install]
+WantedBy=multi-user.target
