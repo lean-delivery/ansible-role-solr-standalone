@@ -30,7 +30,7 @@
     dest: '{{ solr_home }}/security.json'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
-    # mode: 0640
+    mode: 0640
   become: True
   when:
     - solr_auth_configure

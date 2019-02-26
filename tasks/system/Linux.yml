@@ -96,7 +96,6 @@
     group: '{{ solr_group }}'
     mode: 0750
     state: directory
-    recurse: True
   loop:
     - data
     - logs
