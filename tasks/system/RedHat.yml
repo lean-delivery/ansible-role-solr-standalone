@@ -14,4 +14,4 @@
   include_tasks: selinux-support.yml
   when:
     - ansible_selinux.status == 'enabled'
-    - not solr_service_status
+    # - not solr_service_status

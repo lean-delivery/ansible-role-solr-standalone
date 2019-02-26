@@ -1,23 +1,28 @@
 ---
-- name: Change folder permissions
-  file:
-    path: '{{ solr_base_path }}/data'
-    owner: '{{ solr_user }}'
-    group: '{{ solr_group }}'
-    state: directory
-    recurse: True
-  become: True
+# - name: Add folders
+#   file:
+#     path: '{{ solr_base_path }}/{{ solr_create_dirs }}'
+#     owner: '{{ solr_user }}'
+#     group: '{{ solr_group }}'
+#     state: directory
+#     recurse: True
+#   loop:
+#     - data
+#     - log
+#   loop_control:
+#     loop_var: solr_create_dirs
+#   become: True
 
-- name: Adjusting solr java heap memory and other settings
-  template:
-    src: solr.in.sh.j2
-    dest: '{{ solr_insh_default }}'
-    owner: '{{ solr_user }}'
-    group: '{{ solr_group }}'
-    mode: 0755
-  become: True
-  notify:
-    - restart solr linux
+# - name: Adjusting solr java heap memory and other settings
+#   template:
+#     src: solr.in.sh.j2
+#     dest: '{{ solr_insh_default }}'
+#     owner: '{{ solr_user }}'
+#     group: '{{ solr_group }}'
+#     mode: 0640
+#   become: True
+#   notify:
+#     - restart solr linux
 
 - name: Generate basic auth config
   template:

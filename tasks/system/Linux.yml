@@ -17,6 +17,7 @@
   user:
     name: '{{ solr_user }}'
     group: '{{ solr_group }}'
+    home: '{{ solr_base_path }}'
     createhome: True
     state: present
   become: True
@@ -86,6 +87,58 @@
 #     removes: '{{ dest_solr_path }}/bin/install_solr_service.sh'
 #   become: True
 #   # when: not solr_service_status
+
+- name: Add folders
+  file:
+    path: '{{ solr_base_path }}/{{ solr_create_dirs }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    state: directory
+    recurse: True
+  loop:
+    - data
+    - logs
+  loop_control:
+    loop_var: solr_create_dirs
+  become: True
+
+- name: Adjusting solr java heap memory and other settings
+  template:
+    src: solr.in.sh.j2
+    dest: '{{ solr_insh_default }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    mode: 0640
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Copy data config files
+  copy:
+    src: '{{ dest_solr_path }}/server/solr/{{ solr_data_config_file }}'
+    dest: '{{ solr_home }}/{{ solr_data_config_file }}'
+    remote_src: True
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  loop:
+    - solr.xml
+    - zoo.cfg
+  loop_control:
+    loop_var: solr_data_config_file
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Copy log4j config file
+  copy:
+    src: '{{ dest_solr_path }}/server/resources/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    dest: '{{ solr_base_path }}/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    remote_src: True
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  become: True
+  notify:
+    - restart solr linux
 
 - name: Install solr service
   template:

@@ -1,13 +1,15 @@
 [Unit]
 Description=Solr service
+After=syslog.target network.target remote-fs.target
+Before=multi-user.target
 
 [Service]
-Type=simple
 User={{ solr_user }}
 Group={{ solr_group }}
-WorkingDirectory={{ dest_solr_path }}/bin
-ExecStart=/bin/bash -c 'SOLR_INCLUDE={{ solr_insh_default }} ./solr start'
-ExecStop=/bin/bash -c 'SOLR_INCLUDE={{ solr_insh_default }} ./solr stop'
+PIDFile={{ solr_base_path }}/{{ solr_service_name }}-{{ solr_port }}.pid
+Environment=SOLR_INCLUDE={{ solr_insh_default }}
+ExecStart={{ dest_solr_path }}/bin/solr start
+ExecStop={{ dest_solr_path }}/bin/solr stop
 
 TimeoutSec=300
 Restart={{ solr_service_restart }}
