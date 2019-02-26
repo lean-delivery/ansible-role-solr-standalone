@@ -34,7 +34,7 @@
     name: '{{ solr_service_name }}'
     application: '{{ dest_solr_path }}\bin\solr.cmd'
     app_parameters_free_form: 'start -f'
-    state: present
+    state: started
     start_mode: auto
   changed_when: False
   # when: not solr_service_status
