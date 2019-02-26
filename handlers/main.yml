@@ -8,7 +8,12 @@
   when: solr_with_systemd
   become: True
 
+# - name: restart solr windows
+#   win_service:
+#     name: '{{ solr_service_name }}'
+#     state: restarted
+
 - name: restart solr windows
-  win_service:
+  win_nssm:
     name: '{{ solr_service_name }}'
     state: restarted

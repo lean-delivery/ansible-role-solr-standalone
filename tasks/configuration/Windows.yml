@@ -34,11 +34,10 @@
     name: '{{ solr_service_name }}'
     application: '{{ dest_solr_path }}\bin\solr.cmd'
     app_parameters_free_form: 'start -f -p {{ solr_port }}'
-    state: started
+    state: present
     start_mode: auto
-  changed_when: False
   # when: not solr_service_status
-  # notify: restart solr windows
+  notify: restart solr windows
 
 - name: Force all notified handlers
   meta: flush_handlers
