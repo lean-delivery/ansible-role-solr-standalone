@@ -19,6 +19,7 @@
     group: '{{ solr_group }}'
     home: '{{ solr_base_path }}'
     createhome: True
+    system: True
     state: present
   become: True
 
@@ -93,6 +94,7 @@
     path: '{{ solr_base_path }}/{{ solr_create_dirs }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
+    mode: 0750
     state: directory
     recurse: True
   loop:
