@@ -15,6 +15,11 @@
   become: True
   when: keystore_file.stat.exists
 
+- name: Check if solr keystore exists
+  stat:
+    path: '{{ solr_ssl_key_store }}'
+  register: keystore_file
+
 - name: Create private certificate
   openssl_privatekey:
     path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
