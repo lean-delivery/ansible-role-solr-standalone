@@ -25,14 +25,14 @@ Ansible lint:
   tags:
     - aws
 
-.Docker solr-standalone:
+Docker solr-standalone:
   stage: deployment test
   script:
     - molecule test -s default
   tags:
     - aws
 
-.AWS solr-standalone:
+AWS solr-standalone:
   variables:
     AWS_REGION: us-east-1
   stage: deployment test
@@ -50,7 +50,7 @@ AWS Windows solr-standalone:
   tags:
     - aws
 
-.EPC solr-standalone:
+EPC solr-standalone:
   variables:
     EPC_REGION: EPAM-BY2
   stage: deployment test
