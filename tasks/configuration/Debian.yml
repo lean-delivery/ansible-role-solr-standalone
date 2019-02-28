@@ -1,3 +1,0 @@
----
-- name: "Choose system based task"
-  include_tasks: "configuration/{{ ansible_system }}.yml"

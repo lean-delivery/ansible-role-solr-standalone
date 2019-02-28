@@ -1,13 +1,18 @@
 ---
-
+# Run all tests
 stages:
   - lint
   - deployment test
 
 before_script:
+  - rm -rf molecule/resources/provisioning
   - ansible --version
+  - ansible-lint --version
   - molecule --version
-  - ansible-config dump --only-changed
+  - git clone https://github.com/lean-delivery/ansible-molecule-drivers.git molecule/resources/provisioning
+
+variables:
+  GET_SOURCES_ATTEMPTS: "5"
 
 Ansible lint:
   stage: lint
@@ -20,36 +25,36 @@ Ansible lint:
   tags:
     - aws
 
-Docker Solr:
+Docker solr-standalone:
   stage: deployment test
   script:
     - molecule test -s default
   tags:
     - aws
 
-EPC Solr:
+AWS solr-standalone:
+  variables:
+    AWS_REGION: us-east-1
+  stage: deployment test
+  script:
+    - molecule test -s cloud-aws-direct
+  tags:
+    - aws
+
+AWS Windows solr-standalone:
+  variables:
+    AWS_REGION: us-east-1
+  stage: deployment test
+  script:
+    - molecule test -s cloud-aws-windows
+  tags:
+    - aws
+
+EPC solr-standalone:
   variables:
     EPC_REGION: EPAM-BY2
   stage: deployment test
   script:
     - molecule test -s cloud-epc-delegated
-  tags:
-    - delegated
-
-.EPC Windows Solr:
-  variables:
-    EPC_REGION: EPAM-BY2
-  stage: deployment test
-  script:
-    - molecule test -s cloud-epc-windows
-  tags:
-    - delegated
-
-AWS Solr:
-  variables:
-    EPC_REGION: AWS-EUCENTRAL
-  stage: deployment test
-  script:
-    - molecule test -s cloud-aws-delegated
   tags:
     - delegated

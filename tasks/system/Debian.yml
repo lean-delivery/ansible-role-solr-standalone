@@ -1,3 +1,3 @@
 ---
-- name: "Choose system based task"
-  include_tasks: "system/{{ ansible_system }}.yml"
+- name: Choose system based task
+  include_tasks: 'system/{{ ansible_system }}.yml'

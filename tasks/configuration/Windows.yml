@@ -1,61 +1,54 @@
 ---
-- name: "Create solr directories"
+- name: Create solr directories
   win_file:
-    path: "{{ solr_win_dir_item }}"
+    path: '{{ solr_win_dir_item }}'
     state: directory
-  with_items:
-    - "{{ dest_solr_path }}\\data"
-    - "{{ dest_solr_path }}\\logs"
+  loop:
+    - '{{ dest_solr_path }}\data'
+    - '{{ dest_solr_path }}\logs'
   loop_control:
     loop_var: solr_win_dir_item
 
-- name: "Set solr configuration file"
+- name: Set solr configuration file
   win_template:
     src: solr.in.cmd.j2
-    dest: "{{ dest_solr_path }}\\bin\\solr.in.cmd"
-  notify: "restart solr windows"
+    dest: '{{ dest_solr_path }}\bin\solr.in.cmd'
+  notify: restart solr windows
 
-- name: "Generate basic auth config"
+- name: Generate basic auth config
   win_template:
     src: security.json.j2
-    dest: "{{ dest_solr_path }}\\server\\solr\\security.json"
+    dest: '{{ dest_solr_path }}\server\solr\security.json'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-  notify: "restart solr windows"
+  notify: restart solr windows
 
-- name: "Install nssm"
+- name: Install nssm package
   win_chocolatey:
-    name: "nssm"
+    name: nssm
     state: present
 
-- name: "Create solr service"
+- name: Create solr service
   win_nssm:
-    name: "{{ solr_service_name }}"
-    application: "{{ dest_solr_path }}\\bin\\solr.cmd"
-    app_parameters_free_form: "start -f"
+    name: '{{ solr_service_name }}'
+    application: '{{ dest_solr_path }}\bin\solr.cmd'
+    app_parameters_free_form: 'start -f'
     state: started
     start_mode: auto
-  notify: "restart solr windows"
+  # Need to remove when problem with idempotency has gone or fixed
+  changed_when: False
 
-- name: "Force all notified handlers"
+- name: Force all notified handlers
   meta: flush_handlers
-  when:
-    - solr_auth_configure
-    - solr_version is version('7.0.0', '>=')
 
-- name: "Set protocol"
-  set_fact:
-    solr_proto: "{{ solr_ssl_configure | ternary('https', 'http') }}"
-
-- name: "Wait for Solr is UP"
-  run_once: True
+- name: Wait for Solr is UP
   win_get_url:
-    url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/"
-    dest: "{{ solr_win_temp_dir }}\\test.html"
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
+    dest: '{{ solr_win_temp_dir }}\test.html'
     validate_certs: False
-    url_username: solr
-    url_password: SolrRocks
+    url_username: '{{ solr_default_auth_user }}'
+    url_password: '{{ solr_default_auth_pass }}'
   register: solr_main_page
   until: solr_main_page.status_code == 200
   retries: 20
@@ -65,73 +58,32 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
 
-# There is a bug with certificate validation for "win_uri" module (validation can't be switched off)
-# Needs to be checked on ansible 2.7.0
-# - name: "Create new admin user via API"
-#   run_once: True
-#   win_uri:
-#     url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
-#     method: GET
-#     user: solr
-#     password: SolrRocks
-#     validate_certs: False
-#     headers:
-#       Content-Type: 'application/json'
-#     body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"} }'
-#   when:
-#     - solr_auth_configure
-#     - solr_version is version('7.0.0', '>=')
-#     - solr_change_default_password
-#   notify:
-#     - "restart solr windows"
-#
-# - name: "Change default admin user password via API"
-#   run_once: True
-#   win_uri:
-#     url: "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
-#     method: GET
-#     user: solr
-#     password: SolrRocks
-#     validate_certs: False
-#     headers:
-#       Content-Type: 'application/json'
-#     body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"} }'
-#   when:
-#     - solr_auth_configure
-#     - solr_version is version('7.0.0', '>=')
-#     - solr_change_default_password
-#   notify:
-#     - "restart solr windows"
-
-- name: "Install curl"
-  win_chocolatey:
-    name: "curl"
-    state: present
-
-- name: "Create new admin user via API"
-  run_once: True
-  win_command: >
-    curl --user "solr:SolrRocks" -k \
-    "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication" \
-    -H "Content-type:application/json" \
-    -d "{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"} }"
+- name: Create new admin user via API
+  win_uri:
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication/'
+    method: POST
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
+    validate_certs: False
+    headers:
+      Content-type: 'application/json'
+    body: "{'set-user': {'{{ solr_auth_user }}': '{{ solr_auth_pass }}'} }"
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
-  notify:
-    - "restart solr windows"
 
-- name: "Change default admin user password via API"
-  run_once: True
-  win_command: >
-    curl --user "solr:SolrRocks" -k \
-    "{{ solr_proto }}://{{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication" \
-    -H "Content-type:application/json" \
-    -d "{"set-user": {"solr" : "{{ solr_auth_pass }}"} }"
+- name: Change default admin user password via API
+  win_uri:
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication/'
+    method: POST
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
+    validate_certs: False
+    headers:
+      Content-type: 'application/json'
+    body: "{'set-user': {'solr': '{{ solr_auth_pass }}'} }"
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
-  notify:
-    - "restart solr windows"

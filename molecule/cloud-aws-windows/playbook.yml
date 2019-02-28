@@ -3,6 +3,9 @@
   hosts: all
   roles:
     - role: lean_delivery.java
+      java_major_version: 8
+      java_package: jdk
+      java_tarball_install: False
     - role: ansible-role-solr-standalone
   vars:
     solr_change_default_password: False

@@ -1,49 +1,28 @@
 ---
-- name: "Change folder permissions"
-  file:
-    path: "{{ solr_base_path }}"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
-    state: directory
-    recurse: True
-  become: True
-
-- name: "Adjusting solr java heap memory and other settings"
-  template:
-    src: solr.in.sh.j2
-    dest: "{{ solr_insh_default }}"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
-    mode: 0755
-  become: True
-  notify:
-    - "restart solr linux"
-
-- name: "Generate basic auth config"
+- name: Generate basic auth config
   template:
     src: security.json.j2
-    dest: "{{ solr_base_path }}/data/security.json"
-    owner: "{{ solr_user }}"
-    group: "{{ solr_group }}"
-    mode: 0755
+    dest: '{{ solr_home }}/security.json'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    mode: 0640
   become: True
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
   notify:
-    - "restart solr linux"
+    - restart solr linux
 
-- name: "Force all notified handlers"
+- name: Force all notified handlers
   meta: flush_handlers
 
-- name: "Wait for Solr is UP"
+- name: Wait for Solr is UP
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr"
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr'
     status_code: 200
     validate_certs: False
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     force_basic_auth: True
   register: solr_main_page
   until: solr_main_page.status == 200
@@ -56,40 +35,38 @@
 
 - name: Create admin user via API
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     force_basic_auth: True
     headers:
       Content-Type: 'application/json'
     body_format: json
-    body: '{"set-user": {"{{ solr_auth_user }}" : "{{ solr_auth_pass }}"} }'
+    body: '{"set-user": {"{{ solr_auth_user }}": "{{ solr_auth_pass }}"} }'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - "restart solr linux"
+    - restart solr linux
 
-- name: "Change default admin user password via API"
+- name: Change default admin user password via API
   uri:
-    url: "{{ solr_ssl_configure | ternary('https', 'http') }}://\
-      {{ inventory_hostname }}:{{ solr_port }}/solr/admin/authentication"
+    url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/admin/authentication'
     method: POST
-    user: solr
-    password: SolrRocks
+    user: '{{ solr_default_auth_user }}'
+    password: '{{ solr_default_auth_pass }}'
     validate_certs: False
     force_basic_auth: True
     headers:
       Content-Type: 'application/json'
     body_format: json
-    body: '{"set-user": {"solr" : "{{ solr_auth_pass }}"} }'
+    body: '{"set-user": {"solr": "{{ solr_auth_pass }}"} }'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - "restart solr linux"
+    - restart solr linux

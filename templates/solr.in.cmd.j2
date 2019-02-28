@@ -127,11 +127,9 @@ REM set SOLR_SSL_CLIENT_TRUST_STORE_TYPE=
 REM Settings for authentication
 REM Please configure only one of SOLR_AUTHENTICATION_CLIENT_BUILDER or SOLR_AUTH_TYPE parameters
 REM set SOLR_AUTHENTICATION_CLIENT_BUILDER=org.apache.solr.client.solrj.impl.PreemptiveBasicAuthClientBuilderFactory
-{% solr_auth_configure and solr_version is version('7.0.0', '>=') %}
-set SOLR_AUTH_TYPE={{ solr_auth_type }}
-{% endif %}
 
 {% if solr_auth_configure and solr_version is version('7.0.0', '>=') %}
+set SOLR_AUTH_TYPE={{ solr_auth_type }}
 set SOLR_AUTHENTICATION_OPTS="{{ solr_authentication_opts }}"
 {% endif %}
 
