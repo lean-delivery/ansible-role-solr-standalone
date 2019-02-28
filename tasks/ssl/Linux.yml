@@ -14,7 +14,7 @@
 
 - name: Copy keystore file
   copy:
-    src: '{{ solr_local_keystore }}'
+    src: '{{ solr_local_keystore_path }}'
     dest: '{{ solr_ssl_key_store }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
