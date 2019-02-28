@@ -37,8 +37,6 @@
     state: started
     start_mode: auto
   changed_when: False
-  # when: not solr_service_status
-  # notify: restart solr windows
 
 - name: Force all notified handlers
   meta: flush_handlers

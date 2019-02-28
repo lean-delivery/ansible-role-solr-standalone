@@ -43,7 +43,6 @@
     provider: '{{ solr_ssl_certificate_provider }}'
     force: True
   become: True
-  changed_when: False
   when: not keystore_file.stat.exists
 
 - name: Create keystore

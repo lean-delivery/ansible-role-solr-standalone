@@ -43,7 +43,6 @@
   set_fact:
     sha_value: '{{ sha_url_item }}'
   with_url: '{{ solr_distr_url }}.{{ solr_checksum }}'
-  # when: not solr_service_status
   loop_control:
     loop_var: sha_url_item
 
@@ -58,7 +57,6 @@
   retries: 10
   delay: 2
   become: True
-  # when: not solr_service_status
 
 - name: 'Unarchive solr {{ solr_version }}'
   unarchive:
@@ -69,7 +67,6 @@
     group: '{{ solr_group }}'
     remote_src: True
   become: True
-  # when: not solr_service_status
 
 - name: Add folders
   file:
