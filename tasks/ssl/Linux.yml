@@ -1,16 +1,10 @@
 ---
-- name: Check if keystore exists in role
+- name: Check if keystore exists
   stat:
     path: '{{ solr_local_keystore_path }}'
-  delegate_to: localhost
+  delegate_to: '{{ solr_local_keystore | ternary("localhost", inventory_hostname) }}'
   register: keystore_file
   when: solr_local_keystore
-
-- name: Check if remote keystore exists
-  stat:
-    path: '{{ solr_local_keystore_path }}'
-  register: keystore_file
-  when: not solr_local_keystore
 
 - name: Copy keystore file
   copy:
