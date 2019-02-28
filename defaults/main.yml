@@ -38,7 +38,8 @@ solr_timezone: UTC
 solr_service_restart: always
 
 # SSL
-solr_local_keystore: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
+solr_local_keystore: True
+solr_local_keystore_path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
 solr_ssl_configure: True
 solr_ssl_key_store_name: solr-ssl.keystore.jks
 solr_ssl_key_size: 4096

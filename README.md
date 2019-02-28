@@ -109,7 +109,9 @@ Requirements
   - `solr_service_restart` - solr service restart option  
     default: `always`
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
-  - `solr_local_keystore` - path to local keystore file (in order not to create self-signed)  
+  - `solr_local_keystore` - if True - to search for keystore on ansible host on {{ solr_local_keystore_path }}. If False - to check keystore on remote host    
+    default: `True`
+  - `solr_local_keystore_path` - path to local keystore file (in order not to create self-signed)  
     default: `{{ role_path }}/files/{{ solr_ssl_key_store_name }}`
   - `solr_ssl_configure` - configure SSL  
     default: `True`

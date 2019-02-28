@@ -1,9 +1,16 @@
 ---
 - name: Check if keystore exists in role
   stat:
-    path: '{{ solr_local_keystore }}'
+    path: '{{ solr_local_keystore_path }}'
   delegate_to: localhost
   register: keystore_file
+  when: solr_local_keystore
+
+- name: Check if remote keystore exists
+  stat:
+    path: '{{ solr_local_keystore_path }}'
+  register: keystore_file
+  when: not solr_local_keystore
 
 - name: Copy keystore file
   copy:
@@ -12,6 +19,7 @@
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
     mode: 0644
+    remote_src: '{{ not solr_local_keystore }}'
   become: True
   when: keystore_file.stat.exists
 
@@ -20,34 +28,31 @@
     path: '{{ solr_ssl_key_store }}'
   register: keystore_file
 
-- name: Create private certificate
-  openssl_privatekey:
-    path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
-    size: '{{ solr_ssl_key_size | int }}'
-  become: True
-  when: not keystore_file.stat.exists
+- name: Block for become and when
+  block:
+    - name: Create private certificate
+      openssl_privatekey:
+        path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
+        size: '{{ solr_ssl_key_size | int }}'
 
-- name: Create CSR
-  openssl_csr:
-    path: '/tmp/{{ solr_local_cert_file_name }}.csr'
-    privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
-    common_name: '{{ solr_ca_domain }}'
-  become: True
-  when: not keystore_file.stat.exists
+    - name: Create CSR
+      openssl_csr:
+        path: '/tmp/{{ solr_local_cert_file_name }}.csr'
+        privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
+        common_name: '{{ solr_ca_domain }}'
 
-- name: Create certificates for keystore
-  openssl_certificate:
-    csr_path: '/tmp/{{ solr_local_cert_file_name }}.csr'
-    path: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
-    privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
-    provider: '{{ solr_ssl_certificate_provider }}'
-    force: True
-  become: True
-  when: not keystore_file.stat.exists
+    - name: Create certificates for keystore
+      openssl_certificate:
+        csr_path: '/tmp/{{ solr_local_cert_file_name }}.csr'
+        path: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
+        privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
+        provider: '{{ solr_ssl_certificate_provider }}'
+        force: True
 
-- name: Create keystore
-  include_tasks: >-
-    {{ ansible_version.full is version("2.7", "<") |
-    ternary(ansible_system + "_keystore_old.yml", ansible_system + "_keystore_new.yml") }}
+    - name: Create keystore
+      include_tasks: >-
+        {{ ansible_version.full is version("2.7", "<") |
+        ternary(ansible_system + "_keystore_old.yml", ansible_system + "_keystore_new.yml") }}
+  become: True
   when:
     - not keystore_file.stat.exists

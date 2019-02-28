@@ -36,6 +36,7 @@
     app_parameters_free_form: 'start -f'
     state: started
     start_mode: auto
+  # Need to remove when problem with idempotency has gone or fixed
   changed_when: False
 
 - name: Force all notified handlers
