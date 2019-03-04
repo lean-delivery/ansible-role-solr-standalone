@@ -1,10 +1,5 @@
 ---
-- name: Prepare
-  hosts: all
-  gather_facts: True
-  tasks: []
-
-- name: Solr-standalone
+- name: Converge
   hosts: all
   roles:
     - role: lean_delivery.java

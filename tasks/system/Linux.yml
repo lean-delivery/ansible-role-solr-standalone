@@ -1,92 +1,139 @@
 ---
-- name: "Install requirements"
+- name: Install requirements
   package:
-    name: "{{ requirements }}"
-    state: "present"
+    name: '{{ requirements }}'
+    state: present
+  register: installed_packages
+  until: installed_packages is succeeded
   become: True
 
-- name: "Check that solr group is exist"
+- name: Check that solr group is exist
   group:
-    name: "{{ solr_group }}"
+    name: '{{ solr_group }}'
     state: present
   become: True
 
-- name: "Check that solr user is exist"
+- name: Check that solr user is exist
   user:
-    name: "{{ solr_user }}"
-    group: "{{ solr_group }}"
+    name: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    home: '{{ solr_base_path }}'
     createhome: True
+    system: True
     state: present
   become: True
 
-- name: "Set open files limit"
+- name: Set limits
   pam_limits:
-    domain: "{{ solr_user }}"
-    limit_item: "nofile"
-    limit_type: "-"
-    value: "{{ solr_open_files_limit }}"
-  when: solr_set_limits
-  become: True
-
-- name: "Set max processes limit"
-  pam_limits:
-    domain: "{{ solr_user }}"
-    limit_item: "nproc"
-    limit_type: "-"
-    value: "{{ solr_max_processes_limit }}"
-  when: solr_set_limits
-  become: True
-
-- name: "Check if Solr Service Exists"
-  stat:
-    path: /etc/init.d/solr
-  register: solr_service_stat
-
-- name: "Set solr service status"
-  set_fact:
-    solr_service_status: "{{ solr_service_stat.stat.exists }}"
-
-- name: "Get sha1 for solr  {{ solr_version }}"
-  set_fact:
-    sha1_value: "{{ sha1_url_item }}"
-  with_url: "{{ solr_distr_url }}.sha1"
-  when: not solr_service_status
+    domain: '{{ solr_user }}'
+    limit_item: '{{ solr_limit.limit_item }}'
+    limit_type: '-'
+    value: '{{ solr_limit.limit_value }}'
+  loop:
+    - limit_item: nofile
+      limit_value: '{{ solr_open_files_limit }}'
+    - limit_item: nproc
+      limit_value: '{{ solr_max_processes_limit }}'
   loop_control:
-    loop_var: sha1_url_item
+    loop_var: solr_limit
+  when: solr_set_limits
+  become: True
+
+- name: 'Get {{ solr_checksum }} for solr {{ solr_version }}'
+  set_fact:
+    sha_value: '{{ sha_url_item }}'
+  with_url: '{{ solr_distr_url }}.{{ solr_checksum }}'
+  loop_control:
+    loop_var: sha_url_item
 
 # initial deployment of solr
-- name: "Download solr {{ solr_version }} archive"
+- name: 'Download solr {{ solr_version }} archive'
   get_url:
-    url: "{{ solr_distr_url }}"
-    dest: "{{ dest_solr_path }}.zip"
-    checksum: sha1:{{ sha1_value.split(" ")[0] }}
+    url: '{{ solr_distr_url }}'
+    dest: '{{ dest_solr_path }}.zip'
+    checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
   register: result
   until: result is succeeded
   retries: 10
   delay: 2
   become: True
-  when: not solr_service_status
 
-- name: "Unarchive and install solr {{ solr_version }}"
+- name: 'Unarchive solr {{ solr_version }}'
   unarchive:
-    creates: "{{ dest_solr_path }}"
-    src: "{{ dest_solr_path }}.zip"
-    dest: "{{ dest_main_path }}"
+    creates: '{{ dest_solr_path }}'
+    src: '{{ dest_solr_path }}.zip'
+    dest: '{{ dest_main_path }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
     remote_src: True
   become: True
-  when: not solr_service_status
 
-- name: "Install solr as service"
-  command: /bin/bash {{ dest_solr_path }}/bin/install_solr_service.sh \
-    {{ dest_solr_path }}.zip -f -n -d {{ solr_base_path }}
+- name: Add folders
+  file:
+    path: '{{ solr_base_path }}/{{ solr_create_dirs }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    mode: 0750
+    state: directory
+  loop:
+    - data
+    - logs
+  loop_control:
+    loop_var: solr_create_dirs
   become: True
-  when: not solr_service_status
 
-- name: "Install pip packages"
+- name: Adjusting solr java heap memory and other settings
+  template:
+    src: solr.in.sh.j2
+    dest: '{{ solr_insh_default }}'
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+    mode: 0640
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Copy data config files
+  copy:
+    src: '{{ dest_solr_path }}/server/solr/{{ solr_data_config_file }}'
+    dest: '{{ solr_home }}/{{ solr_data_config_file }}'
+    remote_src: True
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  loop:
+    - solr.xml
+    - zoo.cfg
+  loop_control:
+    loop_var: solr_data_config_file
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Copy log4j config file
+  copy:
+    src: '{{ dest_solr_path }}/server/resources/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    dest: '{{ solr_base_path }}/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    remote_src: True
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Install solr service
+  template:
+    src: solr.service.j2
+    dest: '/lib/systemd/system/{{ solr_service_name }}.service'
+  become: True
+  notify:
+    - restart solr linux
+
+- name: Install pip packages
   pip:
-    name: "{{ item }}"
+    name:
+      - pyOpenSSL
     state: present
     extra_args: --upgrade
-  with_items:
-    - pyOpenSSL
+  register: installed_packages
+  until: installed_packages is succeeded
   become: True
