@@ -68,6 +68,16 @@
     remote_src: True
   become: True
 
+- name: Create symlink
+  file:
+    src: '{{ dest_solr_path }}'
+    dest: '{{ dest_main_path }}/solr'
+    state: link
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  when:
+    - dest_main_path + '/solr' != dest_solr_path
+
 - name: Add folders
   file:
     path: '{{ solr_base_path }}/{{ solr_create_dirs }}'
