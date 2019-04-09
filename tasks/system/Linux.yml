@@ -179,8 +179,8 @@
   synchronize:
     src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
     dest: '{{ solr_home }}/configsets/{{ ootb_cs }}'
-    owner: '{{ solr_user }}'
-    group: '{{ solr_group }}'
+    owner: True
+    group: True
     recursive: True
   loop: '{{ default_configsets_list }}'
   loop_control:
