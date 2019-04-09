@@ -4,6 +4,7 @@ requirements:
   - python2-pip
   - net-tools
   - unzip
+  - rsync
   - libselinux-python
 
 default_solr_dest_main_path: /opt

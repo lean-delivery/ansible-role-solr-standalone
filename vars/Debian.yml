@@ -3,6 +3,7 @@ requirements:
   - openssl
   - python-pip
   - unzip
+  - rsync
 
 default_solr_dest_main_path: /opt
 default_solr_dest_path: '{{ solr_dest_main_path }}/solr-{{ solr_version }}'
