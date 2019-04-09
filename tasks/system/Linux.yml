@@ -188,5 +188,5 @@
   become: True
   delegate_to: '{{ inventory_hostname }}'
   when:
-    - not ootb_cs in current_configsets_list
+    - ootb_cs not in current_configsets_list
     - solr_copy_default_configsets
