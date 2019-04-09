@@ -183,7 +183,7 @@
   debug:
     var: current_configsets_list
 
-- name: Copy OOTB configsets
+- name: 'Copy OOTB {{ ootb_cs }} configset'
   copy:
     src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
     dest: '{{ solr_home }}/configsets/{{ ootb_cs }}'
