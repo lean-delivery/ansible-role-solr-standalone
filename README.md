@@ -51,12 +51,12 @@ Requirements
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
   - `solr_host` - solr server name  
     default: `{{ ansible_fqdn }}`
-  - `override_dest_main_path` - root directory to store solr folder  
+  - `solr_dest_main_path` - root directory to store solr folder  
     default: `/opt`  
     default: `C:\Solr`
-  - `override_dest_solr_path` - solr folder path  
-    default: `{{ dest_main_path }}/solr-{{ solr_version }}`  
-    default: `{{ dest_main_path }}\solr-{{ solr_version }}`
+  - `solr_dest_path` - solr folder path  
+    default: `{{ solr_dest_main_path }}/solr-{{ solr_version }}`  
+    default: `{{ solr_dest_main_path }}\solr-{{ solr_version }}`
   - `solr_change_default_password` - to change default password to solr user (will be solr_auth_pass)  
     default: `True`
   - `solr_auth_configure` - Enable authentication  
@@ -108,6 +108,10 @@ Requirements
 
   - `solr_service_restart` - solr service restart option  
     default: `always`
+
+  - `solr_copy_default_configsets` - copy OOTB configsets to {{ solr_home }}/configsets folder
+    default: False
+
 # https://lucene.apache.org/solr/guide/7_1/enabling-ssl.html
   - `solr_local_keystore` - if True - to search for keystore on ansible host on {{ solr_local_keystore_path }}. If False - to check keystore on remote host    
     default: `True`
@@ -117,17 +121,17 @@ Requirements
     default: `True`
   - `solr_ssl_key_size` - certificate key size  
     default: 4096
-  - `override_solr_ssl_key_store_path` - directory to store keystore  
-    default: `{{ dest_solr_path }}/server/solr`  
-    default: `{{ dest_solr_path }}\server\solr`
+  - `solr_ssl_key_store_path` - directory to store keystore  
+    default: `{{ solr_dest_path }}/server/solr`  
+    default: `{{ solr_dest_path }}\server\solr`
   - `solr_ssl_key_store_name` - keystore name. If file with such name exists in role folder/files - it will be used as keystore.  
     default: `solr-ssl.keystore.jks`
-  - `override_solr_ssl_key_store` - path to solr keystore.  
+  - `solr_ssl_key_store` - path to solr keystore.  
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`  
     default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_key_store_password` - keystore password  
     default: `123456`
-  - `override_solr_ssl_trust_store` - path to trust keystore  
+  - `solr_ssl_trust_store` - path to trust keystore  
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`  
     default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_trust_store_password` - trusted keystore password  
@@ -146,12 +150,12 @@ Requirements
     default: `selfsigned`
   - `solr_ca_domain` - certificate domain name  
     default: `example.com`
-  - `override_local_cert_file_path` - path to private cert  
+  - `local_cert_file_path` - path to private cert  
     default: `/etc/pki/tls/private`  
     default: `/etc/ssl/private`
   - `solr_local_pkey_file_name` - private cert name  
     default: `{{ ansible_hostname }}.ca-pkey.pem`
-  - `override_local_cert_file_path` - path to public cert  
+  - `local_cert_file_path` - path to public cert  
     default: `/etc/pki/tls/certs`  
     default: `/etc/ssl/certs`
   - `solr_local_cert_file_name` -public cert name  
@@ -193,8 +197,8 @@ Example Playbook
   vars:
     solr_change_default_password: False
   roles:
-    - role: lean-delivery.java
-    - role: lean-delivery.solr
+    - role: lean_delivery.java
+    - role: lean_delivery.solr_standalone
 ```
 
 License

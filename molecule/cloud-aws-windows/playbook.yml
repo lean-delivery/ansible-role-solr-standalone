@@ -9,3 +9,4 @@
     - role: ansible-role-solr-standalone
   vars:
     solr_change_default_password: False
+    solr_copy_default_configsets: True
