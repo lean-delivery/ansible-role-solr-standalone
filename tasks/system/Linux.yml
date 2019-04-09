@@ -159,7 +159,7 @@
 - name: Populate OOTB configset list
   set_fact:
     default_configsets_list: "{{ default_configsets.files | map(attribute='path') | \
-      list | map('replace', solr_dest_path + '/server/solr/configsets', '') | list }}"
+      list | map('replace', solr_dest_path + '/server/solr/configsets/', '') | list }}"
   when: solr_copy_default_configsets
 
 - name: Debug default_configsets_list
@@ -176,14 +176,14 @@
 - name: Populate current configset list
   set_fact:
     current_configsets_list: "{{ current_configsets.files | map(attribute='path') | \
-      list | map('replace', solr_home + '/configsets', '') | list }}"
+      list | map('replace', solr_home + '/configsets/', '') | list }}"
   when: solr_copy_default_configsets
 
 - name: Debug current_configsets_list
   debug:
     var: current_configsets_list
 
-- name: 'Copy OOTB {{ ootb_cs }} configset'
+- name: Copy OOTB configsets
   copy:
     src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
     dest: '{{ solr_home }}/configsets/{{ ootb_cs }}'
@@ -195,5 +195,5 @@
     loop_var: ootb_cs
   become: True
   when:
-    - not ootb_cs not in current_configsets_list
+    - not ootb_cs in current_configsets_list
     - solr_copy_default_configsets
