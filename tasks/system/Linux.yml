@@ -178,7 +178,7 @@
 - name: Copy OOTB configsets
   synchronize:
     src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
-    dest: '{{ solr_home }}/configsets/{{ ootb_cs }}'
+    dest: '{{ solr_home }}/configsets/'
     owner: True
     group: True
     recursive: True
