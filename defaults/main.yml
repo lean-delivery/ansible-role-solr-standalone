@@ -20,7 +20,7 @@ solr_authentication_opts: '-Dbasicauth={{ solr_auth_user }}:{{ solr_auth_pass }}
 
 solr_dest_main_path: '{{ default_solr_dest_main_path }}'
 #solr_dest_path: '{{ default_solr_dest_path }}'
-solr_dest_path: '{{ solr_dest_main_path }}\solr-{{ solr_version }}'
+solr_dest_path: '{{ solr_dest_main_path }}/solr-{{ solr_version }}'
 
 solr_insh_default: /etc/default/solr.in.sh
 solr_java_xms: 512m
