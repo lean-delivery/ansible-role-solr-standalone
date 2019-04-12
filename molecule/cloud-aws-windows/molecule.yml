@@ -11,7 +11,7 @@ lint:
     config-file: .yamllint
 platforms:
 
-  - name: test-aws-Windows2016-solr-standalone
+  - name: test-aws-Windows2016-solr-standalone-solr7
     aws_image_id: ami-07a29e78aeb420471
     aws_region: us-east-1
     instance_type: m5.large
@@ -23,9 +23,29 @@ platforms:
     wait_timeout: 1800
     groups:
       - windows
+      - solr7
+
+  - name: test-aws-Windows2016-solr-standalone-solr8
+    aws_image_id: ami-07a29e78aeb420471
+    aws_region: us-east-1
+    instance_type: m5.large
+    vpc_subnet_id: subnet-05a2ef2b767afec50
+    assign_public_ip: False
+    spot_price: 0.14
+    aws_sec_group:
+      - default
+    wait_timeout: 1800
+    groups:
+      - windows
+      - solr8
+
 provisioner:
   name: ansible
   log: False
+  inventory:
+    group_vars:
+      solr8:
+        solr_version: 8.0.0
   connection_options:
     ansible_connection: winrm
   inventory:

@@ -7,10 +7,6 @@ requirements:
   - libselinux-python
 
 default_solr_dest_main_path: /opt
-#default_solr_dest_path: '{{ solr_dest_main_path }}/solr-{{ solr_version }}'
 # SSL
-#default_solr_ssl_key_store_path: '{{ solr_dest_path }}/server/solr'
-#default_solr_ssl_key_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
-#default_solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
 default_local_cert_file_path: /etc/pki/tls/certs
 default_local_pkey_file_path: /etc/pki/tls/private

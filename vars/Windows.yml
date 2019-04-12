@@ -1,8 +1,2 @@
 ---
 default_solr_dest_main_path: 'C:\Solr'
-#default_solr_dest_path: '{{ solr_dest_main_path }}\solr-{{ solr_version }}'
-
-# Windows SSL
-#default_solr_ssl_key_store_path: '{{ solr_dest_path }}\server\solr'
-#default_solr_ssl_key_store: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'
-#default_solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}'

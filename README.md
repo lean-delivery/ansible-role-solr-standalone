@@ -56,7 +56,6 @@ Requirements
     default: `C:\Solr`
   - `solr_dest_path` - solr folder path  
     default: `{{ solr_dest_main_path }}/solr-{{ solr_version }}`  
-    default: `{{ solr_dest_main_path }}\solr-{{ solr_version }}`
   - `solr_change_default_password` - to change default password to solr user (will be solr_auth_pass)  
     default: `True`
   - `solr_auth_configure` - Enable authentication  
@@ -123,17 +122,14 @@ Requirements
     default: 4096
   - `solr_ssl_key_store_path` - directory to store keystore  
     default: `{{ solr_dest_path }}/server/solr`  
-    default: `{{ solr_dest_path }}\server\solr`
   - `solr_ssl_key_store_name` - keystore name. If file with such name exists in role folder/files - it will be used as keystore.  
     default: `solr-ssl.keystore.jks`
   - `solr_ssl_key_store` - path to solr keystore.  
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`  
-    default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_key_store_password` - keystore password  
     default: `123456`
   - `solr_ssl_trust_store` - path to trust keystore  
     default: `{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}`  
-    default: `{{ solr_ssl_key_store_path }}\{{ solr_ssl_key_store_name }}`
   - `solr_ssl_trust_store_password` - trusted keystore password  
     default: `123456`
   - `solr_ssl_need_client_auth` - Client Authentication Settings  
@@ -151,13 +147,13 @@ Requirements
   - `solr_ca_domain` - certificate domain name  
     default: `example.com`
   - `local_cert_file_path` - path to private cert  
-    default: `/etc/pki/tls/private`  
-    default: `/etc/ssl/private`
+    default: `/etc/pki/tls/private` for RHEL based  
+    default: `/etc/ssl/private` for Debian based  
   - `solr_local_pkey_file_name` - private cert name  
     default: `{{ ansible_hostname }}.ca-pkey.pem`
   - `local_cert_file_path` - path to public cert  
-    default: `/etc/pki/tls/certs`  
-    default: `/etc/ssl/certs`
+    default: `/etc/pki/tls/certs` for RHEL based  
+    default: `/etc/ssl/certs` for Debian based  
   - `solr_local_cert_file_name` -public cert name  
     default: `{{ ansible_hostname }}.ca-cert.pem`
   - `solr_set_limits` - to set limits  
