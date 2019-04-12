@@ -10,10 +10,10 @@ Solr installation
 
 This role:
   - Installs Solr standalone on Centos 7, Ubuntu or Windows host.
-  - Configures SSL for Solr 7.x
-  - Configures Authentication for Solr 7.x
+  - Configures SSL for Solr 7.x and 8.x
+  - Configures Authentication for Solr 7.x and 8.x
   - Configures Solr
-  - Supported Solr versions: 6.x - 7.x. The latest tested is 7.6.0
+  - Supported Solr versions: 6.x - 8.x. The latest tested is 8.0.0
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
@@ -43,8 +43,8 @@ Requirements
 [Prepared Windows System](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html)
 
 ## Role Variables
-  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 5.3-7.6.x  
-    default: `7.6.0`
+  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 6.x-8.x  
+    default: `8.0.0`
   - `solr_url` - root url to download solr  
     default: `http://archive.apache.org/dist/lucene/solr`
   - `solr_distr_url` - url to zip file  

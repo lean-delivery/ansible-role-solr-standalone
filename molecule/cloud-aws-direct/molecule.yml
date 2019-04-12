@@ -25,7 +25,7 @@ platforms:
       - rhel_family
       - solr7
 
-  - name: test-aws-centos7-solr-standalone-solr8
+  - name: test-aws-centos7-solr-standalone
     image: ami-9887c6e7
     instance_type: m5.large
     region: us-east-1
@@ -38,7 +38,6 @@ platforms:
     ssh_user: centos
     groups:
       - rhel_family
-      - solr8
 
   - name: test-aws-ubuntu16-solr-standalone
     image: ami-09677e0a6b14905b0
@@ -69,7 +68,7 @@ platforms:
       - debian_family
       - solr7
 
-  - name: test-aws-ubuntu18-solr-standalone-solr8
+  - name: test-aws-ubuntu18-solr-standalone
     image: ami-012fd5eb46f56731f
     instance_type: m5.large
     region: us-east-1
@@ -82,7 +81,6 @@ platforms:
     ssh_user: ubuntu
     groups:
       - debian_family
-      - solr8
 
   - name: test-aws-Debian9-solr-standalone
     image: ami-003f19e0e687de1cd
@@ -103,8 +101,8 @@ provisioner:
   log: False
   inventory:
     group_vars:
-      solr8:
-        solr_version: 8.0.0
+      solr7:
+        solr_version: 7.7.1
   playbooks:
     create: ../resources/provisioning/AWS/create.yml
     prepare: ../resources/provisioning/AWS/prepare.yml

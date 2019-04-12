@@ -25,7 +25,7 @@ platforms:
       - windows
       - solr7
 
-  - name: test-aws-Windows2016-solr-standalone-solr8
+  - name: test-aws-Windows2016-solr-standalone
     aws_image_id: ami-07a29e78aeb420471
     aws_region: us-east-1
     instance_type: m5.large
@@ -37,7 +37,6 @@ platforms:
     wait_timeout: 1800
     groups:
       - windows
-      - solr8
 
 provisioner:
   name: ansible
@@ -46,8 +45,8 @@ provisioner:
     ansible_connection: winrm
   inventory:
     group_vars:
-      solr8:
-        solr_version: 8.0.0
+      solr7:
+        solr_version: 7.7.1
       windows:
         ansible_password: "{{ lookup('env', 'WINRM_ADMIN_PWD') | default('M0leCule123!', True) }}"
         ansible_winrm_transport: credssp
