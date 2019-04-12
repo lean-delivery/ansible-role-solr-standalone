@@ -44,12 +44,12 @@ solr_service_restart: always
 solr_copy_default_configsets: False
 
 # SSL
-solr_ssl_key_store_path: '{{ default_solr_ssl_key_store_path }}'
+#solr_ssl_key_store_path: '{{ default_solr_ssl_key_store_path }}'
 solr_ssl_key_store_path: '{{ solr_dest_path }}/server/solr'
 solr_ssl_key_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
 solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
-solr_ssl_key_store: '{{ default_solr_ssl_key_store }}'
-solr_ssl_trust_store: '{{ default_solr_ssl_trust_store }}'
+#solr_ssl_key_store: '{{ default_solr_ssl_key_store }}'
+#solr_ssl_trust_store: '{{ default_solr_ssl_trust_store }}'
 local_cert_file_path: '{{ default_local_cert_file_path }}'
 local_pkey_file_path: '{{ default_local_pkey_file_path }}'
 solr_local_keystore: True
