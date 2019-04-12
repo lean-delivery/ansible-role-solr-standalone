@@ -122,8 +122,12 @@
 
 - name: Copy log4j config file
   copy:
-    src: '{{ solr_dest_path }}/server/resources/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
-    dest: '{{ solr_base_path }}/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    src: >-
+      {{ solr_dest_path }}/server/resources/{{ solr_version is version("7.4.0", "<")
+      | ternary("log4j.properties","log4j2.xml") }}
+    dest: >-
+      {{ solr_base_path }}/{{ solr_version is version("7.4.0", "<")
+      | ternary("log4j.properties","log4j2.xml") }}
     remote_src: True
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
@@ -158,8 +162,10 @@
 
 - name: Populate OOTB configset list
   set_fact:
-    default_configsets_list: "{{ default_configsets.files | map(attribute='path') | \
-      list | map('replace', solr_dest_path + '/server/solr/configsets/', '') | list }}"
+    default_configsets_list: >-
+      {{ default_configsets.files | map(attribute='path')
+      | list | map('replace', solr_dest_path + '/server/solr/configsets/', '')
+      | list }}
   when: solr_copy_default_configsets
 
 - name: Get current configsets
@@ -171,8 +177,9 @@
 
 - name: Populate current configset list
   set_fact:
-    current_configsets_list: "{{ current_configsets.files | map(attribute='path') | \
-      list | map('replace', solr_home + '/configsets/', '') | list }}"
+    current_configsets_list: >-
+      {{ current_configsets.files | map(attribute='path')
+      | list | map('replace', solr_home + '/configsets/', '') | list }}
   when: solr_copy_default_configsets
 
 - name: Copy OOTB configsets

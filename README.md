@@ -23,7 +23,7 @@ For additional configuration, such as master or slave mode use roles:
 
 Requirements
 ------------
-  - Minimal Version of the ansible for installation: 2.5
+  - Minimal Version of the ansible for installation: 2.7
   - **Java 8** [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-java.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-java)
   - **Supported OS**:
     - CentOS

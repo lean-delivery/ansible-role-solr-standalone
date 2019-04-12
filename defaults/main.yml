@@ -19,7 +19,8 @@ solr_default_auth_pass: SolrRocks
 solr_authentication_opts: '-Dbasicauth={{ solr_auth_user }}:{{ solr_auth_pass }}'
 
 solr_dest_main_path: '{{ default_solr_dest_main_path }}'
-solr_dest_path: '{{ default_solr_dest_path }}'
+#solr_dest_path: '{{ default_solr_dest_path }}'
+solr_dest_path: '{{ solr_dest_main_path }}\solr-{{ solr_version }}'
 
 solr_insh_default: /etc/default/solr.in.sh
 solr_java_xms: 512m
@@ -44,6 +45,9 @@ solr_copy_default_configsets: False
 
 # SSL
 solr_ssl_key_store_path: '{{ default_solr_ssl_key_store_path }}'
+solr_ssl_key_store_path: '{{ solr_dest_path }}/server/solr'
+solr_ssl_key_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
+solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
 solr_ssl_key_store: '{{ default_solr_ssl_key_store }}'
 solr_ssl_trust_store: '{{ default_solr_ssl_trust_store }}'
 local_cert_file_path: '{{ default_local_cert_file_path }}'
