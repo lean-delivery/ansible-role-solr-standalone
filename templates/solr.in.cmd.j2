@@ -75,14 +75,14 @@ REM set SOLR_HOME=
 
 REM Path to a directory that Solr will use as root for data folders for each core.
 REM If not set, defaults to <instance_dir>/data. Overridable per core through 'dataDir' core property
-set SOLR_DATA_HOME={{ dest_solr_path }}\data
+set SOLR_DATA_HOME={{ solr_dest_path }}\data
 
 REM Changes the logging level. Valid values: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF. Default is INFO
 REM This is an alternative to changing the rootLogger in log4j.properties
 REM set SOLR_LOG_LEVEL=INFO
 
 REM Location where Solr should write logs to. Absolute or relative to solr start dir
-set SOLR_LOGS_DIR={{ dest_solr_path }}\logs
+set SOLR_LOGS_DIR={{ solr_dest_path }}\logs
 
 REM Enables log rotation, cleanup, and archiving before starting Solr. Setting SOLR_LOG_PRESTART_ROTATION=false will skip start
 REM time rotation of logs, and the archiving of the last GC and console log files. It does not affect Log4j configuration. This

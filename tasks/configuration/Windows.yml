@@ -4,21 +4,21 @@
     path: '{{ solr_win_dir_item }}'
     state: directory
   loop:
-    - '{{ dest_solr_path }}\data'
-    - '{{ dest_solr_path }}\logs'
+    - '{{ solr_dest_path }}\data'
+    - '{{ solr_dest_path }}\logs'
   loop_control:
     loop_var: solr_win_dir_item
 
 - name: Set solr configuration file
   win_template:
     src: solr.in.cmd.j2
-    dest: '{{ dest_solr_path }}\bin\solr.in.cmd'
+    dest: '{{ solr_dest_path }}\bin\solr.in.cmd'
   notify: restart solr windows
 
 - name: Generate basic auth config
   win_template:
     src: security.json.j2
-    dest: '{{ dest_solr_path }}\server\solr\security.json'
+    dest: '{{ solr_dest_path }}\server\solr\security.json'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
@@ -32,7 +32,7 @@
 - name: Create solr service
   win_nssm:
     name: '{{ solr_service_name }}'
-    application: '{{ dest_solr_path }}\bin\solr.cmd'
+    application: '{{ solr_dest_path }}\bin\solr.cmd'
     app_parameters_free_form: 'start -f'
     state: started
     start_mode: auto

@@ -1,27 +1,12 @@
 ---
 requirements:
   - openssl
-  - python-devel
-  - openssl-devel
-  - openssh-clients
   - python2-pip
-  - net-tools
-  - python
   - unzip
-  - lsof
+  - rsync
   - libselinux-python
 
-dest_main_path: '{{ override_dest_main_path | default("/opt", True) }}'
-dest_solr_path: '{{ override_dest_solr_path |
-  default(dest_main_path + "/solr-" + solr_version, True) }}'
+default_solr_dest_main_path: /opt
 # SSL
-solr_ssl_key_store_path: '{{ override_solr_ssl_key_store_path |
-  default(dest_solr_path + "/server/solr", True) }}'
-solr_ssl_key_store: '{{ override_solr_ssl_key_store |
-  default(solr_ssl_key_store_path + "/" + solr_ssl_key_store_name, True) }}'
-solr_ssl_trust_store: '{{ override_solr_ssl_trust_store |
-  default(solr_ssl_key_store_path  + "/" + solr_ssl_key_store_name, True) }}'
-local_cert_file_path: '{{ override_local_cert_file_path |
-  default("/etc/pki/tls/certs", True) }}'
-local_pkey_file_path: '{{ override_local_pkey_file_path |
-  default("/etc/pki/tls/private", True) }}'
+default_local_cert_file_path: /etc/pki/tls/certs
+default_local_pkey_file_path: /etc/pki/tls/private

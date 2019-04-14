@@ -2,7 +2,7 @@
 ## Global application env settings
 ## SOLR_Options
 
-solr_version: 7.6.0
+solr_version: 7.7.1
 
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: '{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip'
@@ -17,6 +17,9 @@ solr_auth_pass: server123
 solr_default_auth_user: solr
 solr_default_auth_pass: SolrRocks
 solr_authentication_opts: '-Dbasicauth={{ solr_auth_user }}:{{ solr_auth_pass }}'
+
+solr_dest_main_path: '{{ default_solr_dest_main_path }}'
+solr_dest_path: '{{ solr_dest_main_path }}/solr-{{ solr_version }}'
 
 solr_insh_default: /etc/default/solr.in.sh
 solr_java_xms: 512m
@@ -37,7 +40,15 @@ solr_timezone: UTC
 
 solr_service_restart: always
 
+solr_copy_default_configsets: False
+
 # SSL
+#solr_ssl_key_store_path: '{{ default_solr_ssl_key_store_path }}'
+solr_ssl_key_store_path: '{{ solr_dest_path }}/server/solr'
+solr_ssl_key_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
+solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
+local_cert_file_path: '{{ default_local_cert_file_path }}'
+local_pkey_file_path: '{{ default_local_pkey_file_path }}'
 solr_local_keystore: True
 solr_local_keystore_path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
 solr_ssl_configure: True

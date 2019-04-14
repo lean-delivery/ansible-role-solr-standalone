@@ -8,8 +8,8 @@ User={{ solr_user }}
 Group={{ solr_group }}
 PIDFile={{ solr_base_path }}/{{ solr_service_name }}-{{ solr_port }}.pid
 Environment=SOLR_INCLUDE={{ solr_insh_default }}
-ExecStart={{ dest_solr_path }}/bin/solr start
-ExecStop={{ dest_solr_path }}/bin/solr stop
+ExecStart={{ solr_dest_path }}/bin/solr start
+ExecStop={{ solr_dest_path }}/bin/solr stop
 
 TimeoutSec=300
 Restart={{ solr_service_restart }}

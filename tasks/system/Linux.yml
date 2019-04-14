@@ -50,7 +50,7 @@
 - name: 'Download solr {{ solr_version }} archive'
   get_url:
     url: '{{ solr_distr_url }}'
-    dest: '{{ dest_solr_path }}.zip'
+    dest: '{{ solr_dest_path }}.zip'
     checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
   register: result
   until: result is succeeded
@@ -60,9 +60,9 @@
 
 - name: 'Unarchive solr {{ solr_version }}'
   unarchive:
-    creates: '{{ dest_solr_path }}'
-    src: '{{ dest_solr_path }}.zip'
-    dest: '{{ dest_main_path }}'
+    creates: '{{ solr_dest_path }}'
+    src: '{{ solr_dest_path }}.zip'
+    dest: '{{ solr_dest_main_path }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
     remote_src: True
@@ -70,13 +70,13 @@
 
 - name: Create symlink
   file:
-    src: '{{ dest_solr_path }}'
-    dest: '{{ dest_main_path }}/solr'
+    src: '{{ solr_dest_path }}'
+    dest: '{{ solr_dest_main_path }}/solr'
     state: link
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
   when:
-    - dest_main_path + '/solr' != dest_solr_path
+    - solr_dest_main_path + '/solr' != solr_dest_path
   become: True
 
 - name: Add folders
@@ -106,7 +106,7 @@
 
 - name: Copy data config files
   copy:
-    src: '{{ dest_solr_path }}/server/solr/{{ solr_data_config_file }}'
+    src: '{{ solr_dest_path }}/server/solr/{{ solr_data_config_file }}'
     dest: '{{ solr_home }}/{{ solr_data_config_file }}'
     remote_src: True
     owner: '{{ solr_user }}'
@@ -122,8 +122,12 @@
 
 - name: Copy log4j config file
   copy:
-    src: '{{ dest_solr_path }}/server/resources/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
-    dest: '{{ solr_base_path }}/{{ solr_version is version("7.4.0", "<") | ternary("log4j.properties","log4j2.xml") }}'
+    src: >-
+      {{ solr_dest_path }}/server/resources/{{ solr_version is version("7.4.0", "<")
+      | ternary("log4j.properties","log4j2.xml") }}
+    dest: >-
+      {{ solr_base_path }}/{{ solr_version is version("7.4.0", "<")
+      | ternary("log4j.properties","log4j2.xml") }}
     remote_src: True
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
@@ -148,3 +152,48 @@
   register: installed_packages
   until: installed_packages is succeeded
   become: True
+
+- name: Get OOTB configsets
+  find:
+    paths: '{{ solr_dest_path }}/server/solr/configsets'
+    file_type: directory
+  register: default_configsets
+  when: solr_copy_default_configsets
+
+- name: Populate OOTB configset list
+  set_fact:
+    default_configsets_list: >-
+      {{ default_configsets.files | map(attribute='path')
+      | list | map('replace', solr_dest_path + '/server/solr/configsets/', '')
+      | list }}
+  when: solr_copy_default_configsets
+
+- name: Get current configsets
+  find:
+    paths: '{{ solr_home }}/configsets'
+    file_type: directory
+  register: current_configsets
+  when: solr_copy_default_configsets
+
+- name: Populate current configset list
+  set_fact:
+    current_configsets_list: >-
+      {{ current_configsets.files | map(attribute='path')
+      | list | map('replace', solr_home + '/configsets/', '') | list }}
+  when: solr_copy_default_configsets
+
+- name: Copy OOTB configsets
+  synchronize:
+    src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
+    dest: '{{ solr_home }}/configsets/'
+    owner: True
+    group: True
+    recursive: True
+  loop: '{{ default_configsets_list }}'
+  loop_control:
+    loop_var: ootb_cs
+  become: True
+  delegate_to: '{{ inventory_hostname }}'
+  when:
+    - ootb_cs not in current_configsets_list
+    - solr_copy_default_configsets

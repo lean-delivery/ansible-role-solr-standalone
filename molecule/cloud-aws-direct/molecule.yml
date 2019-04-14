@@ -10,6 +10,21 @@ lint:
   options:
     config-file: .yamllint
 platforms:
+  - name: test-aws-centos7-solr-standalone-solr7
+    image: ami-9887c6e7
+    instance_type: m5.large
+    region: us-east-1
+    vpc_subnet_id: subnet-05a2ef2b767afec50
+    assign_public_ip: False
+    spot_price: 0.04
+    security_group_name:
+      - default
+    wait_timeout: 1800
+    ssh_user: centos
+    groups:
+      - rhel_family
+      - solr7
+
   - name: test-aws-centos7-solr-standalone
     image: ami-9887c6e7
     instance_type: m5.large
@@ -37,6 +52,21 @@ platforms:
     ssh_user: ubuntu
     groups:
       - debian_family
+
+  - name: test-aws-ubuntu18-solr-standalone-solr7
+    image: ami-012fd5eb46f56731f
+    instance_type: m5.large
+    region: us-east-1
+    vpc_subnet_id: subnet-05a2ef2b767afec50
+    assign_public_ip: False
+    security_group_name:
+      - default
+    spot_price: 0.04
+    wait_timeout: 1800
+    ssh_user: ubuntu
+    groups:
+      - debian_family
+      - solr7
 
   - name: test-aws-ubuntu18-solr-standalone
     image: ami-012fd5eb46f56731f
@@ -69,6 +99,10 @@ platforms:
 provisioner:
   name: ansible
   log: False
+  inventory:
+    group_vars:
+      solr7:
+        solr_version: 7.7.1
   playbooks:
     create: ../resources/provisioning/AWS/create.yml
     prepare: ../resources/provisioning/AWS/prepare.yml
