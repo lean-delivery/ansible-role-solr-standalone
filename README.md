@@ -2,7 +2,7 @@ Solr installation
 =========
 [![License](https://img.shields.io/badge/license-Apache-green.svg?style=flat)](https://raw.githubusercontent.com/lean-delivery/ansible-role-solr-standalone/master/LICENSE)
 [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-solr-standalone.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-solr-standalone)
-[![Build Status](https://gitlab.com/lean-delivery/ansible-role-solr-standalone/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-solr-standalone)
+[![Build Status](https://gitlab.com/lean-delivery/ansible-role-solr-standalone/badges/master/build.svg)](https://gitlab.com/lean-delivery/ansible-role-solr-standalone/pipelines)
 [![Galaxy](https://img.shields.io/badge/galaxy-lean__delivery.solr__standalone-blue.svg)](https://galaxy.ansible.com/lean_delivery/solr_standalone)
 ![Ansible](https://img.shields.io/ansible/role/d/30080.svg)
 ![Ansible](https://img.shields.io/badge/dynamic/json.svg?label=min_ansible_version&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F30080%2F&query=$.min_ansible_version)
