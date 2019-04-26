@@ -14,6 +14,7 @@
   include_tasks: '{{ platform }}'
   with_first_found:
     - 'ssl/{{ ansible_system }}.yml'
+    - 'ssl/{{ ansible_os_family }}.yml'
     - 'system/not-supported.yml'
   loop_control:
     loop_var: platform
@@ -24,6 +25,7 @@
   include_tasks: '{{ platform }}'
   with_first_found:
     - 'configuration/{{ ansible_system }}.yml'
+    - 'configuration/{{ ansible_os_family }}.yml'
     - 'system/not-supported.yml'
   loop_control:
     loop_var: platform
