@@ -3,6 +3,12 @@
   hosts: all
   roles:
     - role: lean_delivery.java
+      transport: web
+      transport_web: "{{ lookup('env','STORAGE_AWS') }}/oracle-java/jdk-8u152-windows-x64.exe"
+      java_major_version: 8
+      java_minor_version: 152
+      java_package: jdk
+      java_tarball_install: False
     - role: ansible-role-solr-standalone
       solr_change_default_password: False
       solr_copy_default_configsets: True
