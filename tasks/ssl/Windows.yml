@@ -23,6 +23,10 @@
   win_chocolatey:
     name: chocolatey
     state: present
+  register: choco_install
+  retries: 15
+  delay: 5
+  until: choco_install is succeeded
   when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
 
 # Workaround for new chocolatey output.
@@ -37,6 +41,10 @@
   win_chocolatey:
     name: openssl.light
     state: present
+  register: choco_package_install
+  retries: 15
+  delay: 5
+  until: choco_package_install is succeeded
   when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
 
 - name: Create private certificate
