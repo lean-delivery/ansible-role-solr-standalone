@@ -17,5 +17,5 @@ def test_hosts_file(host):
 def test_systemd(host):
     s = host.service("solr")
 
-    assert s.is_running()
-    assert s.is_enabled()
+    assert s.is_running
+    assert s.is_enabled
