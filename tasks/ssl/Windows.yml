@@ -19,6 +19,20 @@
     - keystore_file.stat.exists
     - not keystore_file_solr.stat.exists
 
+- name: Check choco
+  win_chocolatey:
+    name: chocolatey
+    state: present
+  when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
+
+# Workaround for new chocolatey output.
+# See https://github.com/ansible/ansible/issues/53860#issuecomment-473431360 for more details
+- name: disable enhanced exit codes
+  win_chocolatey_feature:
+    name: useEnhancedExitCodes
+    state: disabled
+  when: not keystore_file.stat.exists or not keystore_file_solr.stat.exists
+
 - name: Install OpenSSL
   win_chocolatey:
     name: openssl.light
