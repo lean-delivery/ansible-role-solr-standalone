@@ -14,6 +14,6 @@
   win_service:
     name: '{{ solr_service_name }}'
     state: restarted
-    start_mode: '{{ solr_service_autostart | ternary('auto', 'manual') }}'
+    start_mode: '{{ solr_service_autostart | ternary("auto", "manual") }}'
   when:
     - solr_service_start

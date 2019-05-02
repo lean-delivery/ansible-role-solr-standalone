@@ -42,7 +42,7 @@
 - name: autostart Solr service
   win_service:
     name: '{{ solr_service_name }}'
-    start_mode: '{{ solr_service_autostart | ternary('auto', 'manual') }}'
+    start_mode: '{{ solr_service_autostart | ternary("auto", "manual") }}'
 
 - name: Wait for Solr is UP
   win_get_url:
