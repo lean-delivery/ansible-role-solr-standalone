@@ -173,7 +173,7 @@ Requirements
 
     default: `True`
 
-    - `ls_service_autostart` - Add solr service to automatically start.
+  - `solr_service_autostart` - Add solr service to automatically start.
 
     default: `True`
 
