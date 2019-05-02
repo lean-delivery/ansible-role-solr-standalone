@@ -11,10 +11,19 @@
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
   notify:
-    - restart solr linux
+    - restart Solr Linux
 
-- name: Force all notified handlers
-  meta: flush_handlers
+- name: restart Solr Linux
+  systemd:
+    name: '{{ solr_service_name }}'
+    state: restarted
+    daemon_reload: True
+    enabled: '{{ solr_service_autostart }}'
+  when:
+    - solr_auth_configure
+    - solr_version is version('7.0.0', '>=')
+    - solr_change_default_password
+  become: True
 
 - name: Wait for Solr is UP
   uri:
@@ -50,7 +59,7 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - restart solr linux
+    - restart Solr Linux
 
 - name: Change default admin user password via API
   uri:
@@ -69,4 +78,4 @@
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
   notify:
-    - restart solr linux
+    - restart Solr Linux

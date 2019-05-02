@@ -39,6 +39,8 @@ solr_client_timeout: 15000
 solr_timezone: UTC
 
 solr_service_restart: always
+solr_service_start: True
+ls_service_autostart: True
 
 solr_copy_default_configsets: False
 

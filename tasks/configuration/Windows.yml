@@ -13,7 +13,7 @@
   win_template:
     src: solr.in.cmd.j2
     dest: '{{ solr_dest_path }}\bin\solr.in.cmd'
-  notify: restart solr windows
+  notify: restart Solr Windows
 
 - name: Generate basic auth config
   win_template:
@@ -22,7 +22,7 @@
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
-  notify: restart solr windows
+  notify: restart Solr Windows
 
 - name: Install nssm package
   win_chocolatey:
@@ -39,8 +39,10 @@
   # Need to remove when problem with idempotency has gone or fixed
   changed_when: False
 
-- name: Force all notified handlers
-  meta: flush_handlers
+- name: autostart Solr service
+  win_service:
+    name: '{{ solr_service_name }}'
+    start_mode: '{{ solr_service_autostart | ternary('auto', 'manual') }}'
 
 - name: Wait for Solr is UP
   win_get_url:
