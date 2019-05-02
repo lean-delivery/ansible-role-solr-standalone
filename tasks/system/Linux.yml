@@ -102,7 +102,7 @@
     mode: 0640
   become: True
   notify:
-    - restart solr linux
+    - restart Solr Linux
 
 - name: Copy data config files
   copy:
@@ -118,7 +118,7 @@
     loop_var: solr_data_config_file
   become: True
   notify:
-    - restart solr linux
+    - restart Solr Linux
 
 - name: Copy log4j config file
   copy:
@@ -133,7 +133,7 @@
     group: '{{ solr_group }}'
   become: True
   notify:
-    - restart solr linux
+    - restart Solr Linux
 
 - name: Install solr service
   template:
@@ -141,7 +141,13 @@
     dest: '/lib/systemd/system/{{ solr_service_name }}.service'
   become: True
   notify:
-    - restart solr linux
+    - restart Solr Linux
+
+- name: Solr service autostart set
+  service:
+    name: '{{ solr_service_name }}'
+    enabled: '{{ solr_service_autostart }}'
+  become: True
 
 - name: Install pip packages
   pip:

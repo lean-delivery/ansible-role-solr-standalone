@@ -5,10 +5,13 @@
 SOLR_JAVA_MEM="-Xms{{ solr_java_xms }} -Xmx{{ solr_java_xmx }}"
 
 # Enable verbose GC logging
+{% if solr_use_java_version_8 %}
 GC_LOG_OPTS="-verbose:gc -XX:+PrintHeapAtGC -XX:+PrintGCDetails \
 -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCApplicationStoppedTime"
+{% endif %}
 
 # These GC settings have shown to work well for a number of common Solr workloads
+{% if solr_use_java_version_8 %}
 GC_TUNE="-XX:NewRatio=3 \
 -XX:SurvivorRatio=4 \
 -XX:TargetSurvivorRatio=90 \
@@ -23,6 +26,20 @@ GC_TUNE="-XX:NewRatio=3 \
 -XX:CMSMaxAbortablePrecleanTime=6000 \
 -XX:+CMSParallelRemarkEnabled \
 -XX:+ParallelRefProcEnabled"
+{% else %}
+GC_TUNE="-XX:NewRatio=3 \
+-XX:SurvivorRatio=4 \
+-XX:TargetSurvivorRatio=90 \
+-XX:MaxTenuringThreshold=8 \
+-XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 \
+-XX:+CMSScavengeBeforeRemark \
+-XX:PretenureSizeThreshold=64m \
+-XX:+UseCMSInitiatingOccupancyOnly \
+-XX:CMSInitiatingOccupancyFraction=50 \
+-XX:CMSMaxAbortablePrecleanTime=6000 \
+-XX:+CMSParallelRemarkEnabled \
+-XX:+ParallelRefProcEnabled"
+{% endif %}
 
 # Set to true to activate the JMX RMI connector to allow remote JMX client applications
 # to monitor the JVM hosting Solr; set to "false" to disable that behavior
