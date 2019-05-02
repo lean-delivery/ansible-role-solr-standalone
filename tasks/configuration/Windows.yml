@@ -89,3 +89,10 @@
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
+
+- name: start Solr Windows
+  win_service:
+    name: '{{ solr_service_name }}'
+    state: started
+  when:
+    - solr_service_start
