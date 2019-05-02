@@ -47,6 +47,10 @@ Requirements
 
     default: `8.0.0`
 
+  - `solr_use_java_version_8` - if True Solr installed on java version 8 and earlier. If using later versions - set to False
+
+    default: `True`
+
   - `solr_url` - root url to download solr
 
     default: `http://archive.apache.org/dist/lucene/solr`
