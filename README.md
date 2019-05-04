@@ -36,6 +36,7 @@ Requirements
       - "Windows Server 2012"
       - "Windows Server 2012 R2"
       - "Windows Server 2016"
+      - "Windows Server 2019"
       - "Windows 7"
       - "Windows 8.1"
       - "Windows 10"
