@@ -15,8 +15,8 @@ platforms:
     aws_image_id: ami-07a29e78aeb420471
     aws_region: us-east-1
     instance_type: m5.large
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-01be2149
+    assign_public_ip: True
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -30,8 +30,37 @@ platforms:
     aws_image_id: ami-07a29e78aeb420471
     aws_region: us-east-1
     instance_type: m5.large
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-01be2149
+    assign_public_ip: True
+    spot_price: 0.14
+    aws_sec_group:
+      - default
+    wait_timeout: 1800
+    groups:
+      - windows
+      - java12
+
+  - name: test-aws-Windows2019-solr-standalone-solr7
+    aws_image_id: ami-03ad37b4adab50a4c
+    aws_region: us-east-1
+    instance_type: m5.large
+    vpc_subnet_id: subnet-01be2149
+    assign_public_ip: True
+    spot_price: 0.14
+    aws_sec_group:
+      - default
+    wait_timeout: 1800
+    groups:
+      - windows
+      - solr7
+      - java8
+
+  - name: test-aws-Windows2019-solr-standalone
+    aws_image_id: ami-03ad37b4adab50a4c
+    aws_region: us-east-1
+    instance_type: m5.large
+    vpc_subnet_id: subnet-01be2149
+    assign_public_ip: True
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -67,8 +96,6 @@ provisioner:
     destroy: ../resources/provisioning/WINRM/destroy.yml
   lint:
     name: ansible-lint
-  env:
-    ANSIBLE_LIBRARY: ${ANSIBLE_LIBRARY}
 scenario:
   name: cloud-aws-windows
 verifier:
