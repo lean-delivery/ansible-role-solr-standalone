@@ -12,10 +12,11 @@ lint:
 platforms:
   - name: test-aws-centos7-solr-standalone-solr7
     image: ami-9887c6e7
+    platform: centos7
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -30,8 +31,8 @@ platforms:
     image: ami-9887c6e7
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -43,10 +44,11 @@ platforms:
 
   - name: test-aws-ubuntu16-solr-standalone
     image: ami-09677e0a6b14905b0
+    platform: ubuntu16
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     security_group_name:
       - default
     spot_price: 0.04
@@ -58,10 +60,11 @@ platforms:
 
   - name: test-aws-ubuntu18-solr-standalone-solr7
     image: ami-012fd5eb46f56731f
+    platform: ubuntu18
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     security_group_name:
       - default
     spot_price: 0.04
@@ -74,10 +77,11 @@ platforms:
 
   - name: test-aws-ubuntu18-solr-standalone
     image: ami-012fd5eb46f56731f
+    platform: ubuntu18
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     security_group_name:
       - default
     spot_price: 0.04
@@ -89,10 +93,11 @@ platforms:
 
   - name: test-aws-Debian9-solr-standalone
     image: ami-003f19e0e687de1cd
+    platform: debian9
     instance_type: m5.large
     region: us-east-1
-    vpc_subnet_id: subnet-05a2ef2b767afec50
-    assign_public_ip: False
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -104,7 +109,7 @@ platforms:
 
 provisioner:
   name: ansible
-  log: False
+  log: false
   inventory:
     group_vars:
       solr7:
@@ -115,9 +120,9 @@ provisioner:
         java_major_version: 8
         java_minor_version: 211
         java_package: jdk
-        java_tarball_install: True
+        java_tarball_install: true
       java12:
-        solr_use_java_version_8: False
+        solr_use_java_version_8: false
   playbooks:
     create: ../resources/provisioning/AWS/create.yml
     prepare: ../resources/provisioning/AWS/prepare.yml

@@ -12,11 +12,12 @@ lint:
 platforms:
 
   - name: test-aws-Windows2016-solr-standalone-solr7
-    aws_image_id: ami-07a29e78aeb420471
+    aws_image_id: ami-00a20f508263efd30
+    platform: windows2016core
     aws_region: us-east-1
     instance_type: m5.large
     vpc_subnet_id: subnet-01be2149
-    assign_public_ip: True
+    assign_public_ip: true
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -27,11 +28,12 @@ platforms:
       - java8
 
   - name: test-aws-Windows2016-solr-standalone
-    aws_image_id: ami-07a29e78aeb420471
+    aws_image_id: ami-00a20f508263efd30
+    platform: windows2016core
     aws_region: us-east-1
     instance_type: m5.large
     vpc_subnet_id: subnet-01be2149
-    assign_public_ip: True
+    assign_public_ip: true
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -41,11 +43,12 @@ platforms:
       - java12
 
   - name: test-aws-Windows2019-solr-standalone-solr7
-    aws_image_id: ami-03ad37b4adab50a4c
+    aws_image_id: ami-0477b9335a5a75438
+    platform: windows2019core
     aws_region: us-east-1
     instance_type: m5.large
     vpc_subnet_id: subnet-01be2149
-    assign_public_ip: True
+    assign_public_ip: true
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -56,11 +59,12 @@ platforms:
       - java8
 
   - name: test-aws-Windows2019-solr-standalone
-    aws_image_id: ami-03ad37b4adab50a4c
+    aws_image_id: ami-0477b9335a5a75438
+    platform: windows2019core
     aws_region: us-east-1
     instance_type: m5.large
     vpc_subnet_id: subnet-01be2149
-    assign_public_ip: True
+    assign_public_ip: true
     spot_price: 0.14
     aws_sec_group:
       - default
@@ -71,7 +75,10 @@ platforms:
 
 provisioner:
   name: ansible
-  log: False
+  log: false
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks,timer
   connection_options:
     ansible_connection: winrm
   inventory:
@@ -88,7 +95,7 @@ provisioner:
       java12:
         solr_use_java_version_8: False
       windows:
-        ansible_password: "{{ lookup('env', 'WINRM_ADMIN_PWD') | default('M0leCule123!', True) }}"
+        ansible_password: "{{ lookup('env', 'WINRM_ADMIN_PWD') | default('M0leCule123!', true) }}"
         ansible_winrm_transport: credssp
         ansible_winrm_server_cert_validation: ignore
   playbooks:
