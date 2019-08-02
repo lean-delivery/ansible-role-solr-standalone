@@ -2,6 +2,18 @@
 - name: Verify
   hosts: all
   tasks:
-  - name: Example assertion
+
+  - name: Check Solr service status
+    service:
+      name: 'solr'
+      state: started
+      enabled: yes
+    register: sorl_status
+
+  - name: Solr service debug
+    debug:
+      var: sorl_status
+
+  - name: Solr status
     assert:
-      that: true
+      that: "'running' == sorl_status.status.SubState"

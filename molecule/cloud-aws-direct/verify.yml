@@ -1,0 +1,29 @@
+---
+- name: Verify Linux
+  hosts: rhel_family
+  tasks:
+
+  - name: Check Solr service status
+    service:
+      name: 'solr'
+      state: started
+    register: sorl_status
+
+  - name: Solr service debug
+    debug:
+      var: sorl_status
+
+
+- name: Verify Windows
+  hosts: windows
+  tasks:
+
+  - name: Check Solr service status
+    win_service:
+      name: 'solr'
+      state: started
+    register: sorl_status
+
+  - name: Solr service debug
+    debug:
+      var: sorl_status
