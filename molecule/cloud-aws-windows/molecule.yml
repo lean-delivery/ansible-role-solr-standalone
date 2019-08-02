@@ -91,9 +91,9 @@ provisioner:
         java_major_version: 8
         java_minor_version: 152
         java_package: jdk
-        java_tarball_install: False
+        java_tarball_install: false
       java12:
-        solr_use_java_version_8: False
+        solr_use_java_version_8: false
       windows:
         ansible_password: "{{ lookup('env', 'WINRM_ADMIN_PWD') | default('M0leCule123!', true) }}"
         ansible_winrm_transport: credssp

@@ -3,12 +3,12 @@
   systemd:
     name: '{{ solr_service_name }}'
     state: restarted
-    daemon_reload: True
+    daemon_reload: true
     enabled: '{{ solr_service_autostart }}'
   when:
     - solr_with_systemd
     - solr_service_start
-  become: True
+  become: true
 
 - name: restart Solr Windows
   win_service:

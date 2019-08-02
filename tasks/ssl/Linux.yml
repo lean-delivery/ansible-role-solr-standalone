@@ -14,7 +14,7 @@
     group: '{{ solr_group }}'
     mode: 0644
     remote_src: '{{ not solr_local_keystore }}'
-  become: True
+  become: true
   when: keystore_file.stat.exists
 
 - name: Check if solr keystore exists
@@ -41,7 +41,7 @@
         path: '{{ local_cert_file_path }}/{{ solr_local_cert_file_name }}'
         privatekey_path: '{{ local_pkey_file_path }}/{{ solr_local_pkey_file_name }}'
         provider: '{{ solr_ssl_certificate_provider }}'
-        force: True
+        force: true
 
     - name: Read private key
       slurp:
@@ -63,10 +63,10 @@
         owner: '{{ solr_user }}'
         group: '{{ solr_group }}'
         mode: 0644
-        force: True
+        force: true
       become_flags: '-i'
       become_method: sudo
 
-  become: True
+  become: true
   when:
     - not keystore_file.stat.exists

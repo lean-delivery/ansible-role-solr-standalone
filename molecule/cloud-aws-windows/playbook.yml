@@ -4,6 +4,6 @@
   roles:
     - role: lean_delivery.java
     - role: ansible-role-solr-standalone
-      solr_change_default_password: False
-      solr_copy_default_configsets: True
+      solr_change_default_password: false
+      solr_copy_default_configsets: true
       solr_service_restart: no

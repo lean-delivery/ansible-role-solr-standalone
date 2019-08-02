@@ -37,7 +37,7 @@
     state: started
     start_mode: auto
   # Need to remove when problem with idempotency has gone or fixed
-  changed_when: False
+  changed_when: false
 
 - name: autostart Solr service
   win_service:
@@ -48,7 +48,7 @@
   win_get_url:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr/'
     dest: '{{ solr_win_temp_dir }}\test.html'
-    validate_certs: False
+    validate_certs: false
     url_username: '{{ solr_default_auth_user }}'
     url_password: '{{ solr_default_auth_pass }}'
   register: solr_main_page
@@ -66,7 +66,7 @@
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    validate_certs: False
+    validate_certs: false
     headers:
       Content-type: 'application/json'
     body: "{'set-user': {'{{ solr_auth_user }}': '{{ solr_auth_pass }}'} }"
@@ -81,7 +81,7 @@
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    validate_certs: False
+    validate_certs: false
     headers:
       Content-type: 'application/json'
     body: "{'set-user': {'solr': '{{ solr_auth_pass }}'} }"
