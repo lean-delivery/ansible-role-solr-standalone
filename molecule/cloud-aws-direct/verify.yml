@@ -2,35 +2,49 @@
 - name: Verify Linux
   hosts: rhel_family
   tasks:
-
   - name: Check Solr service status
     service:
       name: 'solr'
     check_mode: true
     register: sorl_status
 
-  - name: Solr service debug
-    debug:
-      var: sorl_status
-
-  - name: Solr status
+  - name: Assest Solr service status
     assert:
       that: "'running' == sorl_status.status.SubState"
+
+  - name: Check Solr port status
+    wait_for:
+      port: '8983'
+      state: started
+      timeout: 3
+    register: port_check
+    ignore_errors: yes
+
+  - name: Assert Solr port status
+    assert:
+      that: "port_check.failed == false"
 
 - name: Verify Windows
   hosts: windows
   tasks:
-
   - name: Check Solr service status
     win_service:
       name: 'solr'
     check_mode: true
     register: sorl_status
 
-  - name: Solr service debug
-    debug:
-      var: sorl_status
-
   - name: Solr status
     assert:
       that: "'running' == sorl_status.state"
+
+  - name: Check Solr port status
+    win_wait_for:
+      port: '8983'
+      state: started
+      timeout: 3
+    register: port_check
+    ignore_errors: yes
+
+  - name: Assert Solr port status
+    assert:
+      that: "port_check.failed == false"
