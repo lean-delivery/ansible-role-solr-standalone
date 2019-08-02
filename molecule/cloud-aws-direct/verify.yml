@@ -6,13 +6,16 @@
   - name: Check Solr service status
     service:
       name: 'solr'
-      state: started
+    check_mode: true
     register: sorl_status
 
   - name: Solr service debug
     debug:
       var: sorl_status
 
+  - name: Solr status
+    assert:
+      that: "'running' == sorl_status.status.SubState"
 
 - name: Verify Windows
   hosts: windows
@@ -21,9 +24,13 @@
   - name: Check Solr service status
     win_service:
       name: 'solr'
-      state: started
+    check_mode: true
     register: sorl_status
 
   - name: Solr service debug
     debug:
       var: sorl_status
+
+  - name: Solr status
+    assert:
+      that: "'running' == sorl_status.state"
