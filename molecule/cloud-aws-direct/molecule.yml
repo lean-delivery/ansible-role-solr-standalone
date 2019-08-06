@@ -42,7 +42,7 @@ platforms:
     ssh_user: centos
     groups:
       - rhel_family
-      - java12
+      - java12_nix
 
   - name: test-aws-ubuntu16-solr-standalone
     image: ami-09677e0a6b14905b0
@@ -75,7 +75,7 @@ platforms:
     groups:
       - debian_family
       - solr7
-      - java12
+      - java12_nix
 
   - name: test-aws-Debian9-solr-standalone
     image: ami-003f19e0e687de1cd
@@ -91,7 +91,7 @@ platforms:
     ssh_user: admin
     groups:
       - debian_family
-      - java12
+      - java12_nix
 
   - name: test-aws-Windows2016-solr-standalone
     image: ami-00a20f508263efd30
@@ -122,7 +122,7 @@ platforms:
     wait_timeout: 1800
     groups:
       - windows
-      - java12
+      - java12_win
 
 provisioner:
   name: ansible
@@ -148,7 +148,9 @@ provisioner:
         java_minor_version: 152
         java_package: jdk
         java_tarball_install: false
-      java12:
+      java12_nix:
+        solr_use_java_version_8: false
+      java12_win:
         solr_use_java_version_8: false
         java_distribution: openjdk
         transport: chocolatey
