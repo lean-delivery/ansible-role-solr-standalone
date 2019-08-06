@@ -29,7 +29,7 @@ Lint:
   tags:
     - aws
 
-.Docker solr-standalone:
+Docker solr-standalone:
   stage: deployment test
   script:
     - molecule test -s default
@@ -45,16 +45,7 @@ AWS solr-standalone:
   tags:
     - aws
 
-.AWS Windows solr-standalone:
-  variables:
-    AWS_REGION: us-east-1
-  stage: deployment test
-  script:
-    - molecule test -s cloud-aws-windows
-  tags:
-    - aws
-
-.EPC solr-standalone:
+EPC solr-standalone:
   variables:
     EPC_REGION: EPAM-BY2
   stage: deployment test
