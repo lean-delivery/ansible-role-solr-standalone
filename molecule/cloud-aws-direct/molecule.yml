@@ -150,6 +150,10 @@ provisioner:
         java_tarball_install: false
       java12:
         solr_use_java_version_8: false
+        java_distribution: openjdk
+        transport: chocolatey
+        java_major_version: 12
+        java_minor_version: 0.2
       windows:
         ansible_connection: winrm
         ansible_password: "{{ lookup('env', 'WINRM_ADMIN_PWD') | default('M0leCule123!', true) }}"
