@@ -3,15 +3,15 @@
 ## SOLR_Options
 
 solr_version: 7.7.1
-solr_use_java_version_8: True
+solr_use_java_version_8: true
 
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: '{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip'
 
 solr_host: '{{ ansible_fqdn }}'
 
-solr_change_default_password: True
-solr_auth_configure: True
+solr_change_default_password: true
+solr_auth_configure: true
 solr_auth_type: basic
 solr_auth_user: solrserver
 solr_auth_pass: server123
@@ -33,17 +33,17 @@ solr_port: 8983
 solr_service_name: solr
 solr_base_path: /var/solr
 solr_home: '{{ solr_base_path }}/data'
-solr_with_systemd: True
+solr_with_systemd: true
 solr_logs_dir: '{{ solr_base_path }}/logs'
 solr_wait_for_zk: 30
 solr_client_timeout: 15000
 solr_timezone: UTC
 
 solr_service_restart: always
-solr_service_start: True
-solr_service_autostart: True
+solr_service_start: true
+solr_service_autostart: true
 
-solr_copy_default_configsets: False
+solr_copy_default_configsets: false
 
 # SSL
 #solr_ssl_key_store_path: '{{ default_solr_ssl_key_store_path }}'
@@ -52,9 +52,9 @@ solr_ssl_key_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}
 solr_ssl_trust_store: '{{ solr_ssl_key_store_path }}/{{ solr_ssl_key_store_name }}'
 local_cert_file_path: '{{ default_local_cert_file_path }}'
 local_pkey_file_path: '{{ default_local_pkey_file_path }}'
-solr_local_keystore: True
+solr_local_keystore: true
 solr_local_keystore_path: '{{ role_path }}/files/{{ solr_ssl_key_store_name }}'
-solr_ssl_configure: True
+solr_ssl_configure: true
 solr_ssl_key_store_name: solr-ssl.keystore.jks
 solr_ssl_key_size: 4096
 solr_ssl_key_store_password: 123456
@@ -73,7 +73,7 @@ solr_local_pkey_file_name: '{{ ansible_hostname }}.ca-pkey.pem'
 solr_local_cert_file_name: '{{ ansible_hostname }}.ca-cert.pem'
 
 # Linux limits set
-solr_set_limits: True
+solr_set_limits: true
 solr_open_files_limit: 65000
 solr_max_processes_limit: 65000
 

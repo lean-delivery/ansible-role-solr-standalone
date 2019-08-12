@@ -14,7 +14,7 @@
   win_copy:
     src: '{{ solr_local_keystore }}'
     dest: '{{ solr_ssl_key_store }}'
-    force: True
+    force: true
   when:
     - keystore_file.stat.exists
     - not keystore_file_solr.stat.exists

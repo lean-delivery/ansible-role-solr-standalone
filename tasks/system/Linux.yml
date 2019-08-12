@@ -5,23 +5,23 @@
     state: present
   register: installed_packages
   until: installed_packages is succeeded
-  become: True
+  become: true
 
 - name: Check that solr group is exist
   group:
     name: '{{ solr_group }}'
     state: present
-  become: True
+  become: true
 
 - name: Check that solr user is exist
   user:
     name: '{{ solr_user }}'
     group: '{{ solr_group }}'
     home: '{{ solr_base_path }}'
-    createhome: True
-    system: True
+    createhome: true
+    system: true
     state: present
-  become: True
+  become: true
 
 - name: Set limits
   pam_limits:
@@ -37,7 +37,7 @@
   loop_control:
     loop_var: solr_limit
   when: solr_set_limits
-  become: True
+  become: true
 
 - name: 'Get {{ solr_checksum }} for solr {{ solr_version }}'
   set_fact:
@@ -56,7 +56,7 @@
   until: result is succeeded
   retries: 10
   delay: 2
-  become: True
+  become: true
 
 - name: 'Unarchive solr {{ solr_version }}'
   unarchive:
@@ -65,8 +65,8 @@
     dest: '{{ solr_dest_main_path }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
-    remote_src: True
-  become: True
+    remote_src: true
+  become: true
 
 - name: Create symlink
   file:
@@ -77,7 +77,7 @@
     group: '{{ solr_group }}'
   when:
     - solr_dest_main_path + '/solr' != solr_dest_path
-  become: True
+  become: true
 
 - name: Add folders
   file:
@@ -91,7 +91,7 @@
     - logs
   loop_control:
     loop_var: solr_create_dirs
-  become: True
+  become: true
 
 - name: Adjusting solr java heap memory and other settings
   template:
@@ -100,7 +100,7 @@
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
     mode: 0640
-  become: True
+  become: true
   notify:
     - restart Solr Linux
 
@@ -108,7 +108,7 @@
   copy:
     src: '{{ solr_dest_path }}/server/solr/{{ solr_data_config_file }}'
     dest: '{{ solr_home }}/{{ solr_data_config_file }}'
-    remote_src: True
+    remote_src: true
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
   loop:
@@ -116,7 +116,7 @@
     - zoo.cfg
   loop_control:
     loop_var: solr_data_config_file
-  become: True
+  become: true
   notify:
     - restart Solr Linux
 
@@ -128,10 +128,10 @@
     dest: >-
       {{ solr_base_path }}/{{ solr_version is version("7.4.0", "<")
       | ternary("log4j.properties","log4j2.xml") }}
-    remote_src: True
+    remote_src: true
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
-  become: True
+  become: true
   notify:
     - restart Solr Linux
 
@@ -139,7 +139,7 @@
   template:
     src: solr.service.j2
     dest: '/lib/systemd/system/{{ solr_service_name }}.service'
-  become: True
+  become: true
   notify:
     - restart Solr Linux
 
@@ -147,7 +147,7 @@
   service:
     name: '{{ solr_service_name }}'
     enabled: '{{ solr_service_autostart }}'
-  become: True
+  become: true
 
 - name: Install pip packages
   pip:
@@ -157,7 +157,7 @@
     extra_args: --upgrade
   register: installed_packages
   until: installed_packages is succeeded
-  become: True
+  become: true
 
 - name: Get OOTB configsets
   find:
@@ -192,13 +192,13 @@
   synchronize:
     src: '{{ solr_dest_path }}/server/solr/configsets/{{ ootb_cs }}'
     dest: '{{ solr_home }}/configsets/'
-    owner: True
-    group: True
-    recursive: True
+    owner: true
+    group: true
+    recursive: true
   loop: '{{ default_configsets_list }}'
   loop_control:
     loop_var: ootb_cs
-  become: True
+  become: true
   delegate_to: '{{ inventory_hostname }}'
   when:
     - solr_copy_default_configsets

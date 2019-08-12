@@ -6,7 +6,7 @@
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
     mode: 0640
-  become: True
+  become: true
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
@@ -17,22 +17,22 @@
   systemd:
     name: '{{ solr_service_name }}'
     state: restarted
-    daemon_reload: True
+    daemon_reload: true
     enabled: '{{ solr_service_autostart }}'
   when:
     - solr_auth_configure
     - solr_version is version('7.0.0', '>=')
     - solr_change_default_password
-  become: True
+  become: true
 
 - name: Wait for Solr is UP
   uri:
     url: '{{ solr_proto }}://{{ solr_host }}:{{ solr_port }}/solr'
     status_code: 200
-    validate_certs: False
+    validate_certs: false
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    force_basic_auth: True
+    force_basic_auth: true
   register: solr_main_page
   until: solr_main_page.status == 200
   retries: 20
@@ -48,8 +48,8 @@
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    validate_certs: False
-    force_basic_auth: True
+    validate_certs: false
+    force_basic_auth: true
     headers:
       Content-Type: 'application/json'
     body_format: json
@@ -67,8 +67,8 @@
     method: POST
     user: '{{ solr_default_auth_user }}'
     password: '{{ solr_default_auth_pass }}'
-    validate_certs: False
-    force_basic_auth: True
+    validate_certs: false
+    force_basic_auth: true
     headers:
       Content-Type: 'application/json'
     body_format: json
@@ -84,7 +84,7 @@
   service:
     name: '{{ solr_service_name }}'
     state: started
-    enabled: True
-  become: True
+    enabled: true
+  become: true
   when:
     - solr_service_start

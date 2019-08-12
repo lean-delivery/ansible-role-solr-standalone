@@ -5,12 +5,12 @@
     state: present
   register: installed_packages
   until: installed_packages is succeeded
-  become: True
+  become: true
 
 - name: Choose system based task
-  include_tasks: 'system/{{ ansible_system }}.yml'
+  include_tasks: '{{ ansible_system }}.yml'
 
 - name: Add selinux support
-  include_tasks: selinux-support.yml
+  include_tasks: ../selinux-support.yml
   when:
     - ansible_selinux.status == 'enabled'

@@ -3,7 +3,7 @@
   win_get_url:
     url: '{{ solr_distr_url }}'
     dest: '{{ solr_win_temp_dir }}\{{ solr_version }}.zip'
-    force: False
+    force: false
 
 - name: 'Unzip solr {{ solr_version }}'
   win_unzip:
@@ -19,4 +19,4 @@
     direction: in
     protocol: tcp
     state: present
-    enabled: True
+    enabled: true
