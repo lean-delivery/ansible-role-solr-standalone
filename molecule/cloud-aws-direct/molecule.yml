@@ -14,10 +14,10 @@ platforms:
   - name: test-aws-centos7-solr-standalone-solr7
     image: ami-9887c6e7
     platform: centos7
-    instance_type: m5.large
+    instance_type: m5a.large
     region: us-east-1
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -31,10 +31,10 @@ platforms:
   - name: test-aws-centos7-solr-standalone
     image: ami-9887c6e7
     platform: centos7
-    instance_type: m5.large
+    instance_type: m5a.large
     region: us-east-1
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -47,10 +47,10 @@ platforms:
   - name: test-aws-ubuntu16-solr-standalone
     image: ami-09677e0a6b14905b0
     platform: ubuntu16
-    instance_type: m5.large
+    instance_type: m5a.large
     region: us-east-1
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     security_group_name:
       - default
     spot_price: 0.04
@@ -63,10 +63,10 @@ platforms:
   - name: test-aws-ubuntu18-solr-standalone-solr7
     image: ami-012fd5eb46f56731f
     platform: ubuntu18
-    instance_type: m5.large
+    instance_type: m5a.large
     region: us-east-1
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     security_group_name:
       - default
     spot_price: 0.04
@@ -80,10 +80,10 @@ platforms:
   - name: test-aws-Debian9-solr-standalone
     image: ami-003f19e0e687de1cd
     platform: debian9
-    instance_type: m5.large
+    instance_type: m5a.large
     region: us-east-1
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.04
     security_group_name:
       - default
@@ -97,9 +97,9 @@ platforms:
     image: ami-00a20f508263efd30
     platform: windows2016core
     region: us-east-1
-    instance_type: m5.large
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    instance_type: m5a.large
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.14
     security_group_name:
       - default
@@ -113,9 +113,9 @@ platforms:
     image: ami-0477b9335a5a75438
     platform: windows2019core
     region: us-east-1
-    instance_type: m5.large
-    vpc_subnet_id: subnet-01be2149
-    assign_public_ip: true
+    instance_type: m5a.large
+    vpc_subnet_id: subnet-0f2b9cd66faea38af
+    assign_public_ip: false
     spot_price: 0.14
     security_group_name:
       - default
