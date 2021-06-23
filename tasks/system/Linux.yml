@@ -138,7 +138,7 @@
 - name: Install solr service
   template:
     src: solr.service.j2
-    dest: '/lib/systemd/system/{{ solr_service_name }}.service'
+    dest: '{{ systemd_path }}/{{ solr_service_name }}.service'
   become: true
   notify:
     - restart Solr Linux

@@ -80,3 +80,6 @@ solr_max_processes_limit: 65000
 # Windows vars
 solr_win_temp_dir: 'C:\Windows\Temp'
 solr_win_ssl_subj: '/C=BY/ST=Minsk/L=Minsk/O=O/OU=IT/CN={{ solr_ca_domain }}'
+
+# systemd
+systemd_path: '{{ default_systemd_path }}'
