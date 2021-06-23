@@ -86,19 +86,19 @@ Requirements
 
     default: `basic`
 
-  - `solr_auth_user` - default solr user
+  - `solr_auth_user` - solr auth user (if solr_change_default_password is true)
 
     default: `solrserver`
 
-  - `solr_auth_pass` - default solr user password
+  - `solr_auth_pass` - solr auth user password (if solr_change_default_password is true)
 
     default: `server123`
 
-  - `solr_default_auth_user` - default solr user
+  - `solr_default_auth_user` - default solr auth user
 
     default: `solr`
 
-  - `solr_default_auth_pass` - default solr user password
+  - `solr_default_auth_pass` - default solr auth user password
 
     default: `SolrRocks`
 

@@ -2,7 +2,7 @@
 ## Global application env settings
 ## SOLR_Options
 
-solr_version: 7.7.1
+solr_version: 8.0.0
 solr_use_java_version_8: true
 
 solr_url: http://archive.apache.org/dist/lucene/solr
