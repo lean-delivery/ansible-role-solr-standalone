@@ -2,7 +2,7 @@
 ## Global application env settings
 ## SOLR_Options
 
-solr_version: 7.7.1
+solr_version: 8.6.3
 solr_use_java_version_8: true
 
 solr_url: http://archive.apache.org/dist/lucene/solr
@@ -34,6 +34,7 @@ solr_service_name: solr
 solr_base_path: /var/solr
 solr_home: '{{ solr_base_path }}/data'
 solr_with_systemd: true
+systemd_path: '{{ default_systemd_path }}'
 solr_logs_dir: '{{ solr_base_path }}/logs'
 solr_wait_for_zk: 30
 solr_client_timeout: 15000

@@ -1,7 +1,7 @@
 ---
 default:
   image:
-    name: leandelivery/docker-ansible-ci:ansible-2.8
+    name: leandelivery/docker-ansible-ci:ansible-2.9
 
 stages:
   - lint
@@ -27,7 +27,7 @@ Lint:
   after_script:
     - rm -rf ~/ansible-lint-rules
   tags:
-    - aws
+    - lint
 
 Docker solr-standalone:
   stage: deployment test
@@ -45,7 +45,7 @@ AWS solr-standalone:
   tags:
     - aws
 
-EPC solr-standalone:
+.EPC solr-standalone:
   variables:
     EPC_REGION: EPAM-BY2
   stage: deployment test

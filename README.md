@@ -13,7 +13,7 @@ This role:
   - Configures SSL for Solr 7.x and 8.x
   - Configures Authentication for Solr 7.x and 8.x
   - Configures Solr
-  - Supported Solr versions: 6.x - 8.x. The latest tested is 8.0.0
+  - Supported Solr versions: 6.x - 8.x. The latest tested is 8.6.3
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
@@ -23,13 +23,15 @@ For additional configuration, such as master or slave mode use roles:
 
 Requirements
 ------------
-  - Minimal Version of the ansible for installation: 2.7
-  - **Java 8** [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-java.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-java)
+  - Minimal Version of the ansible for installation: 2.9
+  - **Java 8, 11** [![Build Status](https://travis-ci.org/lean-delivery/ansible-role-java.svg?branch=master)](https://travis-ci.org/lean-delivery/ansible-role-java)
   - **Supported OS**:
     - CentOS
       - 7
     - Ubuntu
     - Debian
+    - SUSE
+      - 12
     - Windows
       - "Windows Server 2008"
       - "Windows Server 2008 R2"
@@ -46,7 +48,7 @@ Requirements
 ## Role Variables
   - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 6.x-8.x
 
-    default: `8.0.0`
+    default: `8.6.3`
 
   - `solr_use_java_version_8` - if True Solr installed on java version 8 and earlier. If using later versions - set to False
 
@@ -86,19 +88,19 @@ Requirements
 
     default: `basic`
 
-  - `solr_auth_user` - default solr user
+  - `solr_auth_user` - solr auth user (if solr_change_default_password is true)
 
     default: `solrserver`
 
-  - `solr_auth_pass` - default solr user password
+  - `solr_auth_pass` - solr auth user password (if solr_change_default_password is true)
 
     default: `server123`
 
-  - `solr_default_auth_user` - default solr user
+  - `solr_default_auth_user` - default solr auth user
 
     default: `solr`
 
-  - `solr_default_auth_pass` - default solr user password
+  - `solr_default_auth_pass` - default solr auth user password
 
     default: `SolrRocks`
 
@@ -153,6 +155,12 @@ Requirements
   - `solr_with_systemd` - to run solr as a service
 
     default: `True`
+
+  - `systemd_path` - path to systemd_path
+
+    default: `/etc/systemd/system` for SUSE
+
+    default: `/lib/systemd/system` for other Linuxes
 
   - `solr_logs_dir` - path to store logs
 
