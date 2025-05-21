@@ -56,6 +56,27 @@
   until: result is succeeded
   retries: 10
   delay: 2
+  when: not solr_download_from_s3
+  become: true
+
+- name: Install pip packages needed by Ansible aws_s3
+  ansible.builtin.pip:
+    name:
+      - boto3
+      - botocore
+    extra_args: '--upgrade'
+  register: install_packages
+  until: install_packages is succeeded
+  when: solr_download_from_s3
+  become: true
+
+- name: Download solr_customizations artifact from s3
+  amazon.aws.aws_s3:
+    bucket: "{{ solr_s3_bucket }}"
+    object: "{{ solr_s3_distr_path }}"
+    dest: "{{ solr_dest_path }}.zip"
+    mode: get
+  when: solr_download_from_s3
   become: true
 
 - name: 'Unarchive solr {{ solr_version }}'
