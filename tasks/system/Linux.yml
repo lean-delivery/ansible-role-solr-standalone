@@ -54,6 +54,7 @@
     checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
   register: result
   until: result is succeeded
+  timeout: 120
   retries: 10
   delay: 2
   become: true
