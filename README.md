@@ -61,7 +61,7 @@ Requirements
 
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
 
-  - `solr_download_from_s3` - To download solr archive from AWS s3 bucket
+  - `solr_download_from_s3` - To download solr archive from AWS s3 bucket. Used access via IAM Instance profile or AWS Credentials configured on instance where Ansible is running
 
     default: `false`
 

@@ -70,7 +70,7 @@
   when: solr_download_from_s3
   become: true
 
-- name: Download solr_customizations artifact from s3
+- name: Download solr archive from s3
   amazon.aws.aws_s3:
     bucket: "{{ solr_s3_bucket }}"
     object: "{{ solr_s3_distr_path }}"
