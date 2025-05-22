@@ -40,13 +40,14 @@ Requirements
       - "Windows 7"
       - "Windows 8.1"
       - "Windows 10"
+    - Amazon Linux 2
 
 [Prepared Windows System](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html)
 
 ## Role Variables
   - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 6.x-8.x
 
-    default: `8.0.0`
+    default: `7.7.1`
 
   - `solr_use_java_version_8` - if True Solr installed on java version 8 and earlier. If using later versions - set to False
 
@@ -59,6 +60,18 @@ Requirements
   - `solr_distr_url` - url to zip file
 
     default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
+
+  - `solr_download_from_s3` - To download solr archive from AWS s3 bucket. Used access via IAM Instance profile or AWS Credentials configured on instance where Ansible is running
+
+    default: `false`
+
+  - `solr_s3_bucket` - AWS S3 bucket name
+
+    default: `sample_bucket`
+
+  - `solr_s3_distr_path` - AWS S3 Object path where solr archive is placed
+
+    default: `solr/{{ solr_version }}/solr-{{ solr_version }}.zip`
 
   - `solr_host` - solr server name
 

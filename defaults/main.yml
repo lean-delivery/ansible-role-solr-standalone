@@ -8,6 +8,10 @@ solr_use_java_version_8: true
 solr_url: http://archive.apache.org/dist/lucene/solr
 solr_distr_url: '{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip'
 
+solr_download_from_s3: false
+solr_s3_bucket: sample_bucket
+solr_s3_distr_path: 'solr/{{ solr_version }}/solr-{{ solr_version }}.zip'
+
 solr_host: '{{ ansible_fqdn }}'
 
 solr_change_default_password: true
