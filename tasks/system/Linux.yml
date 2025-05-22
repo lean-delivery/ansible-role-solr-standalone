@@ -52,6 +52,7 @@
     url: '{{ solr_distr_url }}'
     dest: '{{ solr_dest_path }}.zip'
     checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
+    timeout: 120
   register: result
   until: result is succeeded
   retries: 10
