@@ -112,6 +112,7 @@
     remote_src: true
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
+    mode: 0640
   loop:
     - solr.xml
     - zoo.cfg
@@ -132,6 +133,7 @@
     remote_src: true
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
+    mode: 0640
   become: true
   notify:
     - restart Solr Linux
@@ -139,7 +141,8 @@
 - name: Install solr service
   template:
     src: solr.service.j2
-    dest: '/lib/systemd/system/{{ solr_service_name }}.service'
+    dest: '{{ systemd_path }}/{{ solr_service_name }}.service'
+    mode: 0640
   become: true
   notify:
     - restart Solr Linux

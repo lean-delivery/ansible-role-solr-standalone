@@ -10,3 +10,5 @@ default_solr_dest_main_path: /opt
 # SSL
 default_local_cert_file_path: /etc/pki/tls/certs
 default_local_pkey_file_path: /etc/pki/tls/private
+
+default_systemd_path: /lib/systemd/system
