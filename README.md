@@ -10,10 +10,11 @@ Solr installation
 
 This role:
   - Installs Solr standalone on Centos 7, Ubuntu or Windows host.
-  - Configures SSL for Solr 7.x and 8.x
-  - Configures Authentication for Solr 7.x and 8.x
+  - Configures SSL for Solr 7.x, 8.x and 9.x
+  - Configures Authentication for Solr 7.x, 8.x and 9.x
   - Configures Solr
-  - Supported Solr versions: 6.x - 8.x. The latest tested is 8.0.0
+  - Supported Solr versions: 6.x - 9.x. The latest tested is 9.10.1
+  - Solr 9.x note: archives are downloaded from `https://archive.apache.org/dist/solr/solr/` as `.tgz` (zip is no longer published). On Windows, `tar.exe` (available since Windows 10) is used to extract `.tgz` archives.
 
 For additional configuration, such as master or slave mode use roles:
   - solr-master (lean-delivery.ansible-role-solr-master)
@@ -45,21 +46,25 @@ Requirements
 [Prepared Windows System](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html)
 
 ## Role Variables
-  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/. Tested versions 6.x-8.x
+  - `solr_version` - matches available version on https://archive.apache.org/dist/lucene/solr/ (6.x-8.x) or https://archive.apache.org/dist/solr/solr/ (9.x+). Tested versions 6.x-9.x
 
     default: `7.7.1`
 
-  - `solr_use_java_version_8` - if True Solr installed on java version 8 and earlier. If using later versions - set to False
+  - `solr_use_java_version_8` - if True Solr installed on java version 8 and earlier. If using later versions - set to False. Must be False for Solr 9.x (requires Java 11+)
 
     default: `True`
 
-  - `solr_url` - root url to download solr
+  - `solr_archive_ext` - archive file extension. Automatically set to `tgz` for Solr >= 9.0.0, `zip` for older versions
 
-    default: `http://archive.apache.org/dist/lucene/solr`
+    default: `tgz` for >= 9.0.0, `zip` for < 9.0.0
 
-  - `solr_distr_url` - url to zip file
+  - `solr_url` - root url to download solr. Automatically set based on version: `https://archive.apache.org/dist/solr/solr` for >= 9.0.0, `http://archive.apache.org/dist/lucene/solr` for older
 
-    default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.zip`
+    default: version-dependent (see above)
+
+  - `solr_distr_url` - url to archive file
+
+    default: `{{ solr_url }}/{{ solr_version }}/solr-{{ solr_version }}.{{ solr_archive_ext }}`
 
   - `solr_download_from_s3` - To download solr archive from AWS s3 bucket. Used access via IAM Instance profile or AWS Credentials configured on instance where Ansible is running
 
@@ -71,7 +76,7 @@ Requirements
 
   - `solr_s3_distr_path` - AWS S3 Object path where solr archive is placed
 
-    default: `solr/{{ solr_version }}/solr-{{ solr_version }}.zip`
+    default: `solr/{{ solr_version }}/solr-{{ solr_version }}.{{ solr_archive_ext }}`
 
   - `solr_host` - solr server name
 
@@ -329,9 +334,19 @@ Example Playbook
 ----------------
 
 ```yml
-- name: Install and Configure Solr
+- name: Install and Configure Solr 7.x/8.x
   hosts: solr
   vars:
+    solr_change_default_password: False
+  roles:
+    - role: lean_delivery.java
+    - role: lean_delivery.solr_standalone
+
+- name: Install and Configure Solr 9.x
+  hosts: solr
+  vars:
+    solr_version: 9.10.1
+    solr_use_java_version_8: False
     solr_change_default_password: False
   roles:
     - role: lean_delivery.java
