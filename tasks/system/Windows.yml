@@ -2,7 +2,7 @@
 - name: 'Download solr {{ solr_version }}'
   win_get_url:
     url: '{{ solr_distr_url }}'
-    dest: '{{ solr_win_temp_dir }}\{{ solr_version }}.zip'
+    dest: '{{ solr_win_temp_dir }}\{{ solr_version }}.{{ solr_archive_ext }}'
     force: false
 
 - name: 'Unzip solr {{ solr_version }}'
@@ -10,6 +10,15 @@
     src: '{{ solr_win_temp_dir }}\{{ solr_version }}.zip'
     dest: '{{ solr_dest_main_path }}'
     creates: '{{ solr_dest_path }}'
+  when: solr_archive_ext == "zip"
+
+- name: 'Extract solr {{ solr_version }} tgz archive'
+  win_command: >-
+    tar -xzf "{{ solr_win_temp_dir }}\{{ solr_version }}.tgz"
+    -C "{{ solr_dest_main_path }}"
+  args:
+    creates: '{{ solr_dest_path }}'
+  when: solr_archive_ext == "tgz"
 
 - name: Set solr firewall rule
   win_firewall_rule:

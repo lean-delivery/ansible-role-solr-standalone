@@ -50,7 +50,7 @@
 - name: 'Download solr {{ solr_version }} archive'
   get_url:
     url: '{{ solr_distr_url }}'
-    dest: '{{ solr_dest_path }}.zip'
+    dest: '{{ solr_dest_path }}.{{ solr_archive_ext }}'
     checksum: '{{ solr_checksum }}:{{ sha_value.split(" ")[0] }}'
     timeout: 120
   register: result
@@ -75,7 +75,7 @@
   amazon.aws.aws_s3:
     bucket: "{{ solr_s3_bucket }}"
     object: "{{ solr_s3_distr_path }}"
-    dest: "{{ solr_dest_path }}.zip"
+    dest: "{{ solr_dest_path }}.{{ solr_archive_ext }}"
     mode: get
   when: solr_download_from_s3
   become: true
@@ -83,7 +83,7 @@
 - name: 'Unarchive solr {{ solr_version }}'
   unarchive:
     creates: '{{ solr_dest_path }}'
-    src: '{{ solr_dest_path }}.zip'
+    src: '{{ solr_dest_path }}.{{ solr_archive_ext }}'
     dest: '{{ solr_dest_main_path }}'
     owner: '{{ solr_user }}'
     group: '{{ solr_group }}'
