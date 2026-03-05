@@ -7,7 +7,7 @@ on:
 
 defaults:
   run:
-    working-directory: "lean_delivery.solr-standalone"
+    working-directory: "lean_delivery.solr_standalone"
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
       - name: Check out
         uses: actions/checkout@v6
         with:
-          path: "lean_delivery.solr-standalone"
+          path: "lean_delivery.solr_standalone"
 
       - name: Set up Python 3
         uses: actions/setup-python@v6
